@@ -16,13 +16,17 @@
   - 参考にしたもの
     - [Vite + React の環境構築](https://zenn.dev/kk6/scraps/36fa4579df6acb)
     - [prettier,eslintを導入する際にハマったこと2021新年](https://zenn.dev/ryusou/articles/nodejs-prettier-eslint2021)
+- UIライブラリ
+  - [Mantine](https://mantine.dev/)
+  - 参考にしたもの
+    - [Reactにおけるスタイリング手法まとめ](https://zenn.dev/chiji/articles/b0669fc3094ce3)
+    - [ReactのUIライブラリメモ](https://zenn.dev/ynakamura/scraps/af397fdbe2ec21)
 
 ## これから含めるもの
 
 - ルーティング
 - ステート管理
 - 非同期処理のハンドリング
-- UI コンポーネント
 - バリデーション
 - 多言語対応
 - モックライブラリ
