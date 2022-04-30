@@ -3,6 +3,7 @@ import {
   Anchor,
   AppShell,
   Burger,
+  Button,
   Footer,
   Group,
   Header,
@@ -13,11 +14,17 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import logo from './logo.svg';
 
 const App = () => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+  const navigate = useNavigate();
+  const links = [
+    { label: 'Groups', path: '/group' },
+    { label: 'Events', path: '/events' },
+  ];
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -29,7 +36,22 @@ const App = () => {
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
         >
-          <Text>Here comes the navigation.</Text>
+          <Navbar.Section>
+            {links.map((link) => (
+              <Button
+                variant="subtle"
+                size="md"
+                onClick={() => {
+                  setOpened(false);
+                  navigate(link.path);
+                }}
+                key={link.path}
+                style={{ display: 'block' }}
+              >
+                {link.label}
+              </Button>
+            ))}
+          </Navbar.Section>
         </Navbar>
       }
       footer={
@@ -41,6 +63,8 @@ const App = () => {
         <Header height={60} p="md">
           <Group position="apart">
             <Anchor
+              component={Link}
+              to="/"
               variant="text"
               style={{
                 display: 'flex',
@@ -65,8 +89,7 @@ const App = () => {
         </Header>
       }
     >
-      <Title order={2}>Content Title</Title>
-      <Text>Here comes the content.</Text>
+      <Outlet />
     </AppShell>
   );
 };

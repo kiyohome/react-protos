@@ -21,10 +21,14 @@
   - 参考にしたもの
     - [Reactにおけるスタイリング手法まとめ](https://zenn.dev/chiji/articles/b0669fc3094ce3)
     - [ReactのUIライブラリメモ](https://zenn.dev/ynakamura/scraps/af397fdbe2ec21)
+- ルーティング
+  - [React Router](https://reactrouter.com/)
+  - 参考にしたもの
+    - [React: React Router v6 でルーティングする step１](https://zenn.dev/longbridge/articles/65355d3fdb7939)
+    - [React: React Router v6 でルーティングする step２](https://zenn.dev/longbridge/articles/607ec2971c748e)
 
 ## これから含めるもの
 
-- ルーティング
 - ステート管理
 - 非同期処理のハンドリング
 - バリデーション
