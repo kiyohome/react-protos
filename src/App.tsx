@@ -1,24 +1,6 @@
-import { useState } from 'react';
-import {
-  Anchor,
-  AppShell,
-  Avatar,
-  Burger,
-  Button,
-  Footer,
-  Group,
-  Header,
-  Image,
-  MantineProvider,
-  MediaQuery,
-  Navbar,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import logo from './logo.svg';
+import { MantineProvider } from '@mantine/core';
 import RouterConfig from './RouterConfig';
+import './App.css';
 
 const App = () => (
   <MantineProvider
