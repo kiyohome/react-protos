@@ -1,10 +1,10 @@
 import { Text, Title } from '@mantine/core';
 
-const Events = () => (
+const EventsPage = () => (
   <>
     <Title order={3}>Events</Title>
     <Text>Here comes your events.</Text>
   </>
 );
 
-export default Events;
+export default EventsPage;

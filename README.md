@@ -26,11 +26,14 @@
   - 参考にしたもの
     - [React: React Router v6 でルーティングする step１](https://zenn.dev/longbridge/articles/65355d3fdb7939)
     - [React: React Router v6 でルーティングする step２](https://zenn.dev/longbridge/articles/607ec2971c748e)
+- ステート管理
+  - [React Query](https://react-query.tanstack.com/)
+  - 参考にしたもの
+    - [React Queryを状態管理ライブラリとして使い倒そう！/useQStateのススメ](https://qiita.com/uehaj/items/4e41e294181b3771e77a)
 
 ## これから含めるもの
 
-- ステート管理
+- モックライブラリ
 - 非同期処理のハンドリング
 - バリデーション
 - 多言語対応
-- モックライブラリ

@@ -18,7 +18,7 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../logo.svg';
 
-const Layout = () => {
+const PageLayout = () => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const Layout = () => {
           p="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
-          width={{ sm: 200, lg: 200 }}
+          width={{ sm: 150, lg: 150 }}
         >
           <Navbar.Section>
             {links.map((link) => (
@@ -47,7 +47,6 @@ const Layout = () => {
                   navigate(link.path);
                 }}
                 key={link.path}
-                style={{ display: 'block' }}
                 fullWidth
               >
                 {link.label}
@@ -62,7 +61,7 @@ const Layout = () => {
         </Footer>
       }
       header={
-        <Header height={60} pt="sm" pb="sm" pr="md" pl="md">
+        <Header height={60} py="sm" px="md">
           <Group position="apart">
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
@@ -97,4 +96,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default PageLayout;
