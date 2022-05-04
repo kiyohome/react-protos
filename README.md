@@ -31,6 +31,10 @@
   - [React Query](https://react-query.tanstack.com/)
   - 参考にしたもの
     - [React Queryを状態管理ライブラリとして使い倒そう！/useQStateのススメ](https://qiita.com/uehaj/items/4e41e294181b3771e77a)
+- API
+  - [GraphQL](https://graphql.org/)
+  - 参考にしたもの
+    - [GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606)
 
 ## これから含めるもの
 
