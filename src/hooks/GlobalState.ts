@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from 'react-query';
-import User from '../models/User';
+import { Location, useLocation } from 'react-router-dom';
 
 const useGlobalState = <T>(
   key: string,
@@ -16,6 +16,32 @@ const useGlobalState = <T>(
   return [value, setter];
 };
 
+class User {
+  id?: string;
+
+  name: string;
+
+  constructor(id?: string, name?: string) {
+    this.id = id;
+    this.name = name ?? 'guest';
+  }
+
+  isLoggedIn = () => this.id !== undefined;
+}
+
 const useUser = () => useGlobalState('user', new User());
 
-export default useUser;
+type NavigateState = {
+  state: {
+    from: Location;
+  };
+};
+
+const useNavigateState = () => {
+  const location = useLocation();
+  return { from: location };
+};
+
+export { useUser, User, useNavigateState };
+
+export type { NavigateState };

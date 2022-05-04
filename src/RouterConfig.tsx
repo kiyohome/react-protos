@@ -21,7 +21,14 @@ const RouterConfig = () => (
             </AccessControl>
           }
         />
-        <Route path="events" element={<EventsPage />} />
+        <Route
+          path="events"
+          element={
+            <AccessControl>
+              <EventsPage />
+            </AccessControl>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -26,6 +26,7 @@
   - 参考にしたもの
     - [React: React Router v6 でルーティングする step１](https://zenn.dev/longbridge/articles/65355d3fdb7939)
     - [React: React Router v6 でルーティングする step２](https://zenn.dev/longbridge/articles/607ec2971c748e)
+    - [React:React Router v6 で 認証されていないユーザーや権限がないユーザーをリダイレクトする](https://zenn.dev/longbridge/articles/61b05d8bdb014d)
 - ステート管理
   - [React Query](https://react-query.tanstack.com/)
   - 参考にしたもの

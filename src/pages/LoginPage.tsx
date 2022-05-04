@@ -7,9 +7,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useUser from '../hooks/GlobalState';
-import User from '../models/User';
+import { useUser, User, NavigateState } from '../hooks/GlobalState';
 
 const LoginPage = () => {
   const form = useForm({
@@ -18,26 +18,32 @@ const LoginPage = () => {
       password: '',
     },
   });
-
-  const [user, setUser] = useUser();
+  const [error, setError] = useState('');
+  const [, setUser] = useUser();
   const navigate = useNavigate();
-  const location = useLocation();
-
+  const location = useLocation() as NavigateState;
   const login = form.onSubmit(({ email, password }) => {
     // TODO invoke backend API
-    // TODO handle authentication error
-    setUser(new User('dummy', 'Haruka Ayase'));
-    const fromPath = '/'; // TODO set path before login
-    navigate(fromPath, { replace: true });
+    const isOK = password === 'pass';
+    if (isOK) {
+      setUser(new User('dummy', 'Haruka Ayase'));
+      const path = location.state?.from?.pathname || '/';
+      navigate(path, { replace: true });
+    } else {
+      setError('Email or password is incorrect.');
+    }
   });
-
   const close = () => navigate('/');
 
   return (
     <Modal opened onClose={close} title="Login">
       <form onSubmit={login}>
+        <Text color="red" size="sm">
+          {error}
+        </Text>
         <TextInput
           required
+          type="email"
           label="Email"
           placeholder="your@email.com"
           {...form.getInputProps('email')}

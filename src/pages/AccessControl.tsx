@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useUser from '../hooks/GlobalState';
+import { useUser } from '../hooks/GlobalState';
 
 type Props = {
   children: ReactNode;
@@ -12,7 +12,7 @@ const AccessControl = ({ children }: Props) => {
   return user.isLoggedIn() ? (
     <>{children}</>
   ) : (
-    <Navigate to="/login" state={{ from: location }} />
+    <Navigate to="/login" state={{ from: location }} replace />
   );
 };
 

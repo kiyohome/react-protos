@@ -17,15 +17,20 @@ import {
 } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../logo.svg';
+import { useUser } from '../hooks/GlobalState';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+  const [user] = useUser();
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
+  const logout = () => {
+    window.location.href = '/';
+  };
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -52,6 +57,17 @@ const PageLayout = () => {
                 {link.label}
               </Button>
             ))}
+            {user.isLoggedIn() && (
+              <Button
+                variant="subtle"
+                size="md"
+                onClick={logout}
+                key="/logout"
+                fullWidth
+              >
+                Logout
+              </Button>
+            )}
           </Navbar.Section>
         </Navbar>
       }
