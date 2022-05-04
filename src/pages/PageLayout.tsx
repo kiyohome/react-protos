@@ -17,15 +17,20 @@ import {
 } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../logo.svg';
+import { useUser } from '../hooks/GlobalState';
 
-const Layout = () => {
+const PageLayout = () => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+  const [user] = useUser();
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
+  const logout = () => {
+    window.location.href = '/';
+  };
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -35,7 +40,7 @@ const Layout = () => {
           p="md"
           hiddenBreakpoint="sm"
           hidden={!opened}
-          width={{ sm: 200, lg: 200 }}
+          width={{ sm: 150, lg: 150 }}
         >
           <Navbar.Section>
             {links.map((link) => (
@@ -47,12 +52,22 @@ const Layout = () => {
                   navigate(link.path);
                 }}
                 key={link.path}
-                style={{ display: 'block' }}
                 fullWidth
               >
                 {link.label}
               </Button>
             ))}
+            {user.isLoggedIn() && (
+              <Button
+                variant="subtle"
+                size="md"
+                onClick={logout}
+                key="/logout"
+                fullWidth
+              >
+                Logout
+              </Button>
+            )}
           </Navbar.Section>
         </Navbar>
       }
@@ -62,7 +77,7 @@ const Layout = () => {
         </Footer>
       }
       header={
-        <Header height={60} pt="sm" pb="sm" pr="md" pl="md">
+        <Header height={60} py="sm" px="md">
           <Group position="apart">
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
@@ -97,4 +112,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default PageLayout;

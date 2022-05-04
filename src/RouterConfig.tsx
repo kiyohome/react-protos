@@ -1,18 +1,35 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Events from './pages/Events';
-import Groups from './pages/Groups';
-import Layout from './pages/Layout';
-import NotFound from './pages/NotFound';
-import Welcome from './pages/Welcome';
+import EventsPage from './pages/EventsPage';
+import GroupsPage from './pages/GroupsPage';
+import PageLayout from './pages/PageLayout';
+import NotFoundPage from './pages/NotFoundPage';
+import WelcomePage from './pages/WelcomePage';
+import LoginPage from './pages/LoginPage';
+import AccessControl from './pages/AccessControl';
 
 const RouterConfig = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Welcome />} />
-        <Route path="groups" element={<Groups />} />
-        <Route path="events" element={<Events />} />
-        <Route path="*" element={<NotFound />} />
+      <Route path="/" element={<PageLayout />}>
+        <Route index element={<WelcomePage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route
+          path="groups"
+          element={
+            <AccessControl>
+              <GroupsPage />
+            </AccessControl>
+          }
+        />
+        <Route
+          path="events"
+          element={
+            <AccessControl>
+              <EventsPage />
+            </AccessControl>
+          }
+        />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
