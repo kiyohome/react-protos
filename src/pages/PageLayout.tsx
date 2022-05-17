@@ -44,29 +44,29 @@ const PageLayout = () => {
         >
           <Navbar.Section>
             {links.map((link) => (
-              <Button
-                variant="subtle"
-                size="md"
+              <Anchor
+                key={link.path}
                 onClick={() => {
                   setOpened(false);
                   navigate(link.path);
                 }}
-                key={link.path}
-                fullWidth
+                component="div"
+                underline={false}
+                mb={6}
               >
                 {link.label}
-              </Button>
+              </Anchor>
             ))}
             {user.isLoggedIn() && (
-              <Button
-                variant="subtle"
-                size="md"
+              <Anchor
+                key="logout"
                 onClick={logout}
-                key="/logout"
-                fullWidth
+                component="div"
+                underline={false}
+                mb={6}
               >
                 Logout
-              </Button>
+              </Anchor>
             )}
           </Navbar.Section>
         </Navbar>
@@ -98,7 +98,7 @@ const PageLayout = () => {
               }}
             >
               <Image src={logo} width={30} height={30} />
-              <Title order={4} ml="6px" mt="-3px">
+              <Title order={4} ml={6} mt={-3}>
                 App Name
               </Title>
             </Anchor>
