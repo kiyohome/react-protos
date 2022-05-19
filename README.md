@@ -31,13 +31,17 @@
   - [React Query](https://react-query.tanstack.com/)
   - 参考にしたもの
     - [React Queryを状態管理ライブラリとして使い倒そう！/useQStateのススメ](https://qiita.com/uehaj/items/4e41e294181b3771e77a)
+- 認証
+  - [Supabase](https://supabase.com/docs/)
+  - 参考にしたもの
+    - [Login With Email](https://supabase.com/docs/guides/auth/auth-email)
+
+## これから含めるもの
+
 - API
   - [GraphQL](https://graphql.org/)
   - 参考にしたもの
     - [GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606)
-
-## これから含めるもの
-
 - モックライブラリ
 - 非同期処理のハンドリング
 - バリデーション

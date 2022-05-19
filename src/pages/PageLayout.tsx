@@ -18,6 +18,7 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import logo from '../logo.svg';
 import { useUser } from '../hooks/GlobalState';
+import useSupabase from '../hooks/Supabase';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
@@ -28,7 +29,9 @@ const PageLayout = () => {
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
-  const logout = () => {
+  const supabase = useSupabase();
+  const signOut = async () => {
+    await supabase.auth.signOut();
     window.location.href = '/';
   };
   return (
@@ -59,13 +62,13 @@ const PageLayout = () => {
             ))}
             {user.isLoggedIn() && (
               <Anchor
-                key="logout"
-                onClick={logout}
+                key="signOut"
+                onClick={signOut}
                 component="div"
                 underline={false}
                 mb={6}
               >
-                Logout
+                Sign out
               </Anchor>
             )}
           </Navbar.Section>

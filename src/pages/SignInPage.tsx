@@ -1,6 +1,8 @@
 import {
+  Anchor,
   Button,
   Group,
+  LoadingOverlay,
   Modal,
   PasswordInput,
   Text,
@@ -8,38 +10,49 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, User, NavigateState } from '../hooks/GlobalState';
+import useSupabase from '../hooks/Supabase';
 
-const LoginPage = () => {
+const SignInPage = () => {
   const form = useForm({
     initialValues: {
       email: '',
       password: '',
     },
   });
-  const [error, setError] = useState('');
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
   const [, setUser] = useUser();
   const navigate = useNavigate();
   const location = useLocation() as NavigateState;
-  const login = form.onSubmit(({ email, password }) => {
-    // TODO invoke backend API
-    const isOK = password === 'pass';
-    if (isOK) {
-      setUser(new User('dummy', 'Haruka Ayase'));
+  const supabase = useSupabase();
+
+  const signIn = async (credentials: {
+    email: string;
+    password: string;
+  }): Promise<void> => {
+    setLoading(true);
+    const { user } = await supabase.auth.signIn(credentials);
+    if (user) {
+      setUser(new User(user?.id, user?.email));
       const path = location.state?.from?.pathname || '/';
       navigate(path, { replace: true });
     } else {
-      setError('Email or password is incorrect.');
+      setMessage('Email or password is incorrect.');
     }
-  });
+    setLoading(false);
+  };
+
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Login">
-      <form onSubmit={login}>
+    <Modal opened onClose={close} title="Sign in">
+      <LoadingOverlay visible={loading} />
+      <form onSubmit={form.onSubmit(signIn)}>
         <Text color="red" size="sm">
-          {error}
+          {message}
         </Text>
         <TextInput
           required
@@ -60,10 +73,13 @@ const LoginPage = () => {
         />
         <Group position="apart" mt="md">
           <Text color="dimmed" size="xs">
-            Don't have an account? Register
+            Don't have an account?{' '}
+            <Anchor component={Link} to="/signup" size="xs">
+              Sign up
+            </Anchor>
           </Text>
           <Button type="submit" size="sm">
-            Login
+            Sign in
           </Button>
         </Group>
       </form>
@@ -71,4 +87,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignInPage;
