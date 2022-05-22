@@ -4,7 +4,6 @@ import {
   AppShell,
   Avatar,
   Burger,
-  Button,
   Footer,
   Group,
   Header,

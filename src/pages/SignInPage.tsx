@@ -73,7 +73,7 @@ const SignInPage = () => {
         />
         <Group position="apart" mt="md">
           <Text color="dimmed" size="xs">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Anchor component={Link} to="/signup" size="xs">
               Sign up
             </Anchor>
