@@ -33,16 +33,19 @@ const SignInPage = () => {
     email: string;
     password: string;
   }): Promise<void> => {
-    setLoading(true);
-    const { user } = await supabase.auth.signIn(credentials);
-    if (user) {
-      setUser(new User(user?.id, user?.email));
-      const path = location.state?.from?.pathname || '/';
-      navigate(path, { replace: true });
-    } else {
-      setMessage('Email or password is incorrect.');
+    try {
+      setLoading(true);
+      const { user } = await supabase.auth.signIn(credentials);
+      if (user) {
+        setUser(new User(user?.id, user?.email));
+        const path = location.state?.from?.pathname || '/';
+        navigate(path, { replace: true });
+      } else {
+        setMessage('Email or password is incorrect.');
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const close = () => navigate('/');
@@ -68,7 +71,6 @@ const SignInPage = () => {
           label="Password"
           placeholder="Password"
           {...form.getInputProps('password')}
-          id="current-password"
           autoComplete="current-password"
         />
         <Group position="apart" mt="md">

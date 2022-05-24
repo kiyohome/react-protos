@@ -16,8 +16,14 @@ import useSupabase from '../hooks/Supabase';
 const SignUpPage = () => {
   const form = useForm({
     initialValues: {
+      nickname: '',
       email: '',
       password: '',
+      confirmPassword: '',
+    },
+    validate: {
+      confirmPassword: (value, values) =>
+        value !== values.password ? 'Passwords did not match' : null,
     },
   });
 
@@ -26,18 +32,33 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const supabase = useSupabase();
 
-  const signUp = async (credentials: {
+  const signUp = async (values: {
+    nickname: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }): Promise<void> => {
-    setLoading(true);
-    const { user } = await supabase.auth.signUp(credentials);
-    if (user) {
-      navigate('/signin', { replace: true });
-    } else {
-      setMessage('Email or password is incorrect.');
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signUp(
+        {
+          email: values.email,
+          password: values.password,
+        },
+        {
+          data: {
+            nickname: values.nickname,
+          },
+        }
+      );
+      if (error) {
+        setMessage(error.message);
+      } else {
+        navigate('/signin', { replace: true });
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const close = () => navigate('/');
@@ -51,10 +72,20 @@ const SignUpPage = () => {
         </Text>
         <TextInput
           required
+          type="text"
+          label="Nickname"
+          placeholder="Nickname"
+          {...form.getInputProps('nickname')}
+          description="Nicknames must be unique across services. If you cannot sign up, please change your nickname."
+        />
+        <TextInput
+          mt="md"
+          required
           type="email"
           label="Email"
           placeholder="your@email.com"
           {...form.getInputProps('email')}
+          description="After signing up, please check your email for activation."
           autoComplete="email"
         />
         <PasswordInput
@@ -63,8 +94,15 @@ const SignUpPage = () => {
           label="Password"
           placeholder="Password"
           {...form.getInputProps('password')}
-          id="current-password"
-          autoComplete="current-password"
+          autoComplete="new-password"
+        />
+        <PasswordInput
+          mt="md"
+          required
+          label="Confirm Password"
+          placeholder="Confirm Password"
+          {...form.getInputProps('confirmPassword')}
+          autoComplete="new-password"
         />
         <Group position="apart" mt="md">
           <Text color="dimmed" size="xs">
