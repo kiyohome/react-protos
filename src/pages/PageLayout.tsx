@@ -3,11 +3,13 @@ import {
   AppShell,
   Avatar,
   Burger,
+  Divider,
   Footer,
   Group,
   Header,
   Image,
   MediaQuery,
+  Menu,
   Navbar,
   Text,
   Title,
@@ -21,7 +23,10 @@ import useSupabase from '../hooks/Supabase';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
-  const [state, setState] = useSetState({ opened: false });
+  const [state, setState] = useSetState({
+    navbarOpened: false,
+    menuOpened: false,
+  });
   const [user] = useUser();
   const navigate = useNavigate();
   const links = [
@@ -41,7 +46,7 @@ const PageLayout = () => {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden={!state.opened}
+          hidden={!state.navbarOpened}
           width={{ sm: 150, lg: 150 }}
         >
           <Navbar.Section>
@@ -49,7 +54,7 @@ const PageLayout = () => {
               <Anchor
                 key={link.path}
                 onClick={() => {
-                  setState({ opened: false });
+                  setState({ navbarOpened: false });
                   navigate(link.path);
                 }}
                 component="div"
@@ -59,32 +64,16 @@ const PageLayout = () => {
                 {link.label}
               </Anchor>
             ))}
-            {user.isLoggedIn() && (
-              <Anchor
-                key="signOut"
-                onClick={signOut}
-                component="div"
-                underline={false}
-                mb={6}
-              >
-                Sign out
-              </Anchor>
-            )}
           </Navbar.Section>
         </Navbar>
-      }
-      footer={
-        <Footer height={60} p="md">
-          <Text>Here comes the footer.</Text>
-        </Footer>
       }
       header={
         <Header height={60} py="sm" px="md">
           <Group position="apart">
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
-                opened={state.opened}
-                onClick={() => setState({ opened: !state.opened })}
+                opened={state.navbarOpened}
+                onClick={() => setState({ navbarOpened: !state.navbarOpened })}
                 size="sm"
                 color={theme.colors.gray[6]}
               />
@@ -99,14 +88,42 @@ const PageLayout = () => {
                 height: '100%',
               }}
             >
-              <Image src={logo} width={30} height={30} />
-              <Title order={4} ml={6} mt={-3}>
-                App Name
-              </Title>
+              <Group spacing={6}>
+                <Image src={logo} width={30} height={30} />
+                <Title order={4} mt={-3}>
+                  App Name
+                </Title>
+              </Group>
             </Anchor>
-            <Avatar radius="md" size="md" />
+            <Menu
+              opened={state.menuOpened}
+              onOpen={() => setState({ menuOpened: true })}
+              onClose={() => setState({ menuOpened: false })}
+              control={<Avatar radius="md" size="md" />}
+            >
+              {user.isLoggedIn() ? (
+                <>
+                  <Menu.Label>Signed in as {user.name}</Menu.Label>
+                  <Divider />
+                  <Menu.Item onClick={signOut}>Sign out</Menu.Item>
+                </>
+              ) : (
+                <>
+                  <Menu.Label>Not signed in</Menu.Label>
+                  <Divider />
+                  <Menu.Item onClick={() => navigate('/signin')}>
+                    Sign in
+                  </Menu.Item>
+                </>
+              )}
+            </Menu>
           </Group>
         </Header>
+      }
+      footer={
+        <Footer height={60} p="md">
+          <Text>Here comes the footer.</Text>
+        </Footer>
       }
     >
       <Outlet />

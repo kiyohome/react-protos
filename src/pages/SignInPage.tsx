@@ -36,7 +36,7 @@ const SignInPage = () => {
       setState({ loading: true });
       const { user } = await supabase.auth.signIn(credentials);
       if (user) {
-        setUser(new User(user?.id, user?.email));
+        setUser(new User(user?.id, user?.user_metadata.nickname as string));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
       } else {
