@@ -9,7 +9,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useState } from 'react';
+import { useSetState } from '@mantine/hooks';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, User, NavigateState } from '../hooks/GlobalState';
 import useSupabase from '../hooks/Supabase';
@@ -22,8 +22,7 @@ const SignInPage = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [state, setState] = useSetState({ loading: false, message: '' });
   const [, setUser] = useUser();
   const navigate = useNavigate();
   const location = useLocation() as NavigateState;
@@ -34,17 +33,17 @@ const SignInPage = () => {
     password: string;
   }): Promise<void> => {
     try {
-      setLoading(true);
+      setState({ loading: true });
       const { user } = await supabase.auth.signIn(credentials);
       if (user) {
         setUser(new User(user?.id, user?.email));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
       } else {
-        setMessage('Email or password is incorrect.');
+        setState({ message: 'Email or password is incorrect.' });
       }
     } finally {
-      setLoading(false);
+      setState({ loading: false });
     }
   };
 
@@ -52,10 +51,10 @@ const SignInPage = () => {
 
   return (
     <Modal opened onClose={close} title="Sign in">
-      <LoadingOverlay visible={loading} />
+      <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(signIn)}>
         <Text color="red" size="sm">
-          {message}
+          {state.message}
         </Text>
         <TextInput
           required

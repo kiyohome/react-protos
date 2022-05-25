@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Anchor,
   AppShell,
@@ -15,13 +14,14 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useSetState } from '@mantine/hooks';
 import logo from '../logo.svg';
 import { useUser } from '../hooks/GlobalState';
 import useSupabase from '../hooks/Supabase';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const [state, setState] = useSetState({ opened: false });
   const [user] = useUser();
   const navigate = useNavigate();
   const links = [
@@ -41,7 +41,7 @@ const PageLayout = () => {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden={!opened}
+          hidden={!state.opened}
           width={{ sm: 150, lg: 150 }}
         >
           <Navbar.Section>
@@ -49,7 +49,7 @@ const PageLayout = () => {
               <Anchor
                 key={link.path}
                 onClick={() => {
-                  setOpened(false);
+                  setState({ opened: false });
                   navigate(link.path);
                 }}
                 component="div"
@@ -83,8 +83,8 @@ const PageLayout = () => {
           <Group position="apart">
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
+                opened={state.opened}
+                onClick={() => setState({ opened: !state.opened })}
                 size="sm"
                 color={theme.colors.gray[6]}
               />

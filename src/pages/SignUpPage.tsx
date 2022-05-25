@@ -9,7 +9,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useState } from 'react';
+import { useSetState } from '@mantine/hooks';
 import { Link, useNavigate } from 'react-router-dom';
 import useSupabase from '../hooks/Supabase';
 
@@ -27,8 +27,7 @@ const SignUpPage = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [state, setState] = useSetState({ loading: false, messaage: '' });
   const navigate = useNavigate();
   const supabase = useSupabase();
 
@@ -39,7 +38,7 @@ const SignUpPage = () => {
     confirmPassword: string;
   }): Promise<void> => {
     try {
-      setLoading(true);
+      setState({ loading: true });
       const { error } = await supabase.auth.signUp(
         {
           email: values.email,
@@ -52,12 +51,12 @@ const SignUpPage = () => {
         }
       );
       if (error) {
-        setMessage(error.message);
+        setState({ messaage: error.message });
       } else {
         navigate('/signin', { replace: true });
       }
     } finally {
-      setLoading(false);
+      setState({ loading: false });
     }
   };
 
@@ -65,10 +64,10 @@ const SignUpPage = () => {
 
   return (
     <Modal opened onClose={close} title="Sing up">
-      <LoadingOverlay visible={loading} />
+      <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(signUp)}>
         <Text color="red" size="sm">
-          {message}
+          {state.messaage}
         </Text>
         <TextInput
           required
