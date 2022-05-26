@@ -10,6 +10,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, User, NavigateState } from '../hooks/GlobalState';
 import useSupabase from '../hooks/Supabase';
@@ -36,9 +37,10 @@ const SignInPage = () => {
       setState({ loading: true });
       const { user } = await supabase.auth.signIn(credentials);
       if (user) {
-        setUser(new User(user?.id, user?.user_metadata.nickname as string));
+        setUser(new User(user.id, user.user_metadata.nickname as string));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
+        showNotification({ message: 'Successful sign in.' });
       } else {
         setState({ message: 'Email or password is incorrect.' });
       }

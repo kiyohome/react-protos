@@ -8,6 +8,7 @@ import {
   Group,
   Header,
   Image,
+  LoadingOverlay,
   MediaQuery,
   Menu,
   Navbar,
@@ -17,6 +18,7 @@ import {
 } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import logo from '../logo.svg';
 import { useUser } from '../hooks/GlobalState';
 import useSupabase from '../hooks/Supabase';
@@ -26,6 +28,7 @@ const PageLayout = () => {
   const [state, setState] = useSetState({
     navbarOpened: false,
     menuOpened: false,
+    loading: false,
   });
   const [user] = useUser();
   const navigate = useNavigate();
@@ -35,8 +38,14 @@ const PageLayout = () => {
   ];
   const supabase = useSupabase();
   const signOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
+    try {
+      setState({ loading: true });
+      await supabase.auth.signOut();
+      showNotification({ message: 'Successful sign out.' });
+      window.location.href = '/';
+    } finally {
+      setState({ loading: false });
+    }
   };
   return (
     <AppShell
@@ -126,6 +135,7 @@ const PageLayout = () => {
         </Footer>
       }
     >
+      <LoadingOverlay visible={state.loading} />
       <Outlet />
     </AppShell>
   );

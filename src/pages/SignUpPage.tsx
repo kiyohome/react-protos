@@ -10,6 +10,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { Link, useNavigate } from 'react-router-dom';
 import useSupabase from '../hooks/Supabase';
 
@@ -54,6 +55,7 @@ const SignUpPage = () => {
         setState({ messaage: error.message });
       } else {
         navigate('/signin', { replace: true });
+        showNotification({ message: 'Successful sign up.' });
       }
     } finally {
       setState({ loading: false });

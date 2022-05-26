@@ -420,10 +420,10 @@
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-4.2.1.tgz#60960c24debaf6c0bd2e51f84ac28abecec534b8"
   integrity sha512-+sg8aBK1IzCLGrtL2PEUp1q2/3blUvxJPoqIE6wwcvtIc7cFYfPWRdFFRtkwJjHQ+KlH6TvCO0Yl7F6FBq7+Rw==
 
-"@mantine/notifications@^4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-4.2.1.tgz#2bff96858bc6357f017439df12165b31d4f395bd"
-  integrity sha512-16jqAMwdANexOpVmBFwquP6nAJQPDBWmhEcf6Fm4mFhB8wpBX5nKepUsa+In49CvfPBHMEsROrJ4YqcwoP8Eig==
+"@mantine/notifications@^4.2.6":
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-4.2.6.tgz#dd9ffb6ac285562000f276164c36ae7f7f3fda77"
+  integrity sha512-VvQBZaO22YcqYEmk83xEfDmNRSYN8hl4rlN16XVFN0bsRq6yD2Qbc+bKRKnYHooyk3WzRMcMcrty/mJlDzQ95g==
   dependencies:
     react-transition-group "^4.4.2"
 

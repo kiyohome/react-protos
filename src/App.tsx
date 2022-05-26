@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import RouterConfig from './RouterConfig';
 import './App.css';
@@ -13,7 +14,9 @@ const App = () => (
         headings: { fontFamily: 'Noto Sans JP, sans-serif' },
       }}
     >
-      <RouterConfig />
+      <NotificationsProvider position="top-center" autoClose={2000}>
+        <RouterConfig />
+      </NotificationsProvider>
     </MantineProvider>
   </QueryClientProvider>
 );
