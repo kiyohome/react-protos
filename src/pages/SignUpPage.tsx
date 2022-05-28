@@ -65,7 +65,7 @@ const SignUpPage = () => {
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Sing up">
+    <Modal opened onClose={close} title="Sing up" centered>
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(signUp)}>
         <Text color="red" size="sm">

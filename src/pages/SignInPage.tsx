@@ -52,7 +52,7 @@ const SignInPage = () => {
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Sign in">
+    <Modal opened onClose={close} title="Sign in" centered>
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(signIn)}>
         <Text color="red" size="sm">
