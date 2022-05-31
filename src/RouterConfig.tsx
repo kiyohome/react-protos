@@ -4,15 +4,17 @@ import GroupsPage from './pages/GroupsPage';
 import PageLayout from './pages/PageLayout';
 import NotFoundPage from './pages/NotFoundPage';
 import WelcomePage from './pages/WelcomePage';
-import LoginPage from './pages/LoginPage';
 import AccessControl from './pages/AccessControl';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
 
 const RouterConfig = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<PageLayout />}>
         <Route index element={<WelcomePage />} />
-        <Route path="login" element={<LoginPage />} />
+        <Route path="signup" element={<SignUpPage />} />
+        <Route path="signin" element={<SignInPage />} />
         <Route
           path="groups"
           element={

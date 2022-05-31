@@ -1,35 +1,51 @@
-import { useState } from 'react';
 import {
   Anchor,
   AppShell,
   Avatar,
   Burger,
-  Button,
+  Divider,
   Footer,
   Group,
   Header,
   Image,
+  LoadingOverlay,
   MediaQuery,
+  Menu,
   Navbar,
   Text,
   Title,
   useMantineTheme,
 } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import logo from '../logo.svg';
 import { useUser } from '../hooks/GlobalState';
+import useSupabase from '../hooks/Supabase';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const [state, setState] = useSetState({
+    navbarOpened: false,
+    menuOpened: false,
+    loading: false,
+  });
   const [user] = useUser();
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
-  const logout = () => {
-    window.location.href = '/';
+  const supabase = useSupabase();
+  const signOut = async () => {
+    try {
+      setState({ loading: true });
+      await supabase.auth.signOut();
+      showNotification({ message: 'Successful sign out.' });
+      window.location.href = '/';
+    } finally {
+      setState({ loading: false });
+    }
   };
   return (
     <AppShell
@@ -39,50 +55,34 @@ const PageLayout = () => {
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
-          hidden={!opened}
+          hidden={!state.navbarOpened}
           width={{ sm: 150, lg: 150 }}
         >
           <Navbar.Section>
             {links.map((link) => (
-              <Button
-                variant="subtle"
-                size="md"
+              <Anchor
+                key={link.path}
                 onClick={() => {
-                  setOpened(false);
+                  setState({ navbarOpened: false });
                   navigate(link.path);
                 }}
-                key={link.path}
-                fullWidth
+                component="div"
+                underline={false}
+                mb={6}
               >
                 {link.label}
-              </Button>
+              </Anchor>
             ))}
-            {user.isLoggedIn() && (
-              <Button
-                variant="subtle"
-                size="md"
-                onClick={logout}
-                key="/logout"
-                fullWidth
-              >
-                Logout
-              </Button>
-            )}
           </Navbar.Section>
         </Navbar>
-      }
-      footer={
-        <Footer height={60} p="md">
-          <Text>Here comes the footer.</Text>
-        </Footer>
       }
       header={
         <Header height={60} py="sm" px="md">
           <Group position="apart">
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
+                opened={state.navbarOpened}
+                onClick={() => setState({ navbarOpened: !state.navbarOpened })}
                 size="sm"
                 color={theme.colors.gray[6]}
               />
@@ -97,16 +97,45 @@ const PageLayout = () => {
                 height: '100%',
               }}
             >
-              <Image src={logo} width={30} height={30} />
-              <Title order={4} ml="6px" mt="-3px">
-                App Name
-              </Title>
+              <Group spacing={6}>
+                <Image src={logo} width={30} height={30} />
+                <Title order={4} mt={-3}>
+                  App Name
+                </Title>
+              </Group>
             </Anchor>
-            <Avatar radius="md" size="md" />
+            <Menu
+              opened={state.menuOpened}
+              onOpen={() => setState({ menuOpened: true })}
+              onClose={() => setState({ menuOpened: false })}
+              control={<Avatar radius="md" size="md" />}
+            >
+              {user.isLoggedIn() ? (
+                <>
+                  <Menu.Label>Signed in as {user.name}</Menu.Label>
+                  <Divider />
+                  <Menu.Item onClick={signOut}>Sign out</Menu.Item>
+                </>
+              ) : (
+                <>
+                  <Menu.Label>Not signed in</Menu.Label>
+                  <Divider />
+                  <Menu.Item onClick={() => navigate('/signin')}>
+                    Sign in
+                  </Menu.Item>
+                </>
+              )}
+            </Menu>
           </Group>
         </Header>
       }
+      footer={
+        <Footer height={60} p="md">
+          <Text>Here comes the footer.</Text>
+        </Footer>
+      }
     >
+      <LoadingOverlay visible={state.loading} />
       <Outlet />
     </AppShell>
   );
