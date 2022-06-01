@@ -21,7 +21,7 @@ import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import logo from '../logo.svg';
 import { useUser } from '../hooks/GlobalState';
-import useSupabase from '../hooks/Supabase';
+// import useSupabase from '../hooks/Supabase';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
@@ -36,11 +36,11 @@ const PageLayout = () => {
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
-  const supabase = useSupabase();
+  // const supabase = useSupabase();
   const signOut = async () => {
     try {
       setState({ loading: true });
-      await supabase.auth.signOut();
+      // await supabase.auth.signOut();
       showNotification({ message: 'Successful sign out.' });
       window.location.href = '/';
     } finally {
