@@ -123,6 +123,9 @@ const PageLayout = () => {
                   <Menu.Item onClick={() => navigate('/signin')}>
                     Sign in
                   </Menu.Item>
+                  <Menu.Item onClick={() => navigate('/signup')}>
+                    Sign up
+                  </Menu.Item>
                 </>
               )}
             </Menu>
