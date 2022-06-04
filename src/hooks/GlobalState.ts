@@ -1,7 +1,7 @@
-import { SupabaseClient } from '@supabase/supabase-js';
+import { ApiError, createClient, SupabaseClient } from '@supabase/supabase-js';
+import { GraphQLClient } from 'graphql-request';
 import { useQuery, useQueryClient } from 'react-query';
 import { Location, useLocation } from 'react-router-dom';
-import useSupabase from './Supabase';
 
 const useGlobalState = <T>(
   key: string,
@@ -36,12 +36,62 @@ class User {
     );
   }
 
+  get accessToken(): string {
+    return this.supabase.auth.session()?.access_token ?? '';
+  }
+
   isLoggedIn = (): boolean => this.id !== undefined;
+
+  signIn = async (values: {
+    email: string;
+    password: string;
+  }): Promise<boolean> => {
+    const { error } = await this.supabase.auth.signIn(values);
+    return error === null;
+  };
+
+  signOut = async (): Promise<void> => {
+    await this.supabase.auth.signOut();
+  };
+
+  signUp = async (values: {
+    email: string;
+    password: string;
+    nickname: string;
+  }): Promise<ApiError | null> => {
+    const { error } = await this.supabase.auth.signUp(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        data: {
+          nickname: values.nickname,
+        },
+      }
+    );
+    return error;
+  };
 }
 
-const useUser = () => {
-  const supabase = useSupabase();
-  return useGlobalState('user', new User(supabase));
+const url = import.meta.env.VITE_SUPABASE_URL;
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const endpoint = import.meta.env.VITE_SUPABASE_ENDPOINT;
+
+const supabaseClient = createClient(url, anonKey);
+const user = new User(supabaseClient);
+
+const graphQLClient = new GraphQLClient(endpoint);
+graphQLClient.setHeader('apikey', anonKey);
+
+const useUser = (): User => user;
+
+const useGraphQLClient = (): GraphQLClient => {
+  if (user.isLoggedIn()) {
+    const { accessToken } = user;
+    graphQLClient.setHeader('Authorization', `Bearer ${accessToken}`);
+  }
+  return graphQLClient;
 };
 
 type NavigateState = {
@@ -55,6 +105,6 @@ const useNavigateState = () => {
   return { from: location };
 };
 
-export { useUser, User, useNavigateState };
+export { useUser, useGraphQLClient, useNavigateState };
 
 export type { NavigateState };

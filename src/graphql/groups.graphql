@@ -1,0 +1,10 @@
+query getGroups {
+  groupsCollection {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}

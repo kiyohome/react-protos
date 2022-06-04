@@ -40,14 +40,19 @@
 - API
   - [GraphQL](https://graphql.org/)
   - 参考にしたもの
-    - [supabase + GraphQL の String 検索で like を使えるようにする](https://zenn.dev/sora_kumo/articles/718f9af36891c6)
+    - [GraphQL Code Generator + React Queryの紹介](https://tech.hicustomer.jp/posts/graphql-codegen-react-query/)
+    - [Guide: React and GraphQL](https://www.graphql-code-generator.com/docs/guides/react)
+    - [TypeScript React-Query](https://www.graphql-code-generator.com/plugins/typescript-react-query)
 
 ## これから含めるもの
 
-- モックライブラリ
 - 非同期処理のハンドリング
+  - 参考にしたもの
+    - [React QueryのSuspese Modeを使ってみた!](https://re-engines.com/2022/04/11/react-query-suspense/)
+    - [React Query Error Handling](https://tkdodo.eu/blog/react-query-error-handling)
 - バリデーション
 - 多言語対応
+- モックライブラリ
 
 ## ER図
 

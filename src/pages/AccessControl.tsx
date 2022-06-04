@@ -8,7 +8,7 @@ type Props = {
 
 const AccessControl = ({ children }: Props) => {
   const location = useLocation();
-  const [user] = useUser();
+  const user = useUser();
   return user.isLoggedIn() ? (
     <>{children}</>
   ) : (

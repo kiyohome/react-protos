@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "lint": "yarn lint:fmt && yarn lint:fix",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "lint:fmt": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json}"
+    "lint:fmt": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json}",
+    "generate": "graphql-codegen -v -r dotenv/config --config codegen.yml"
   },
   "dependencies": {
     "@mantine/core": "^4.2.7",
@@ -18,12 +19,18 @@
     "@mantine/notifications": "^4.2.7",
     "@supabase/supabase-js": "^1.35.3",
     "dayjs": "^1.11.2",
+    "graphql": "^16.5.0",
+    "graphql-request": "^4.3.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-query": "^3.39.1",
     "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "2.6.2",
+    "@graphql-codegen/typescript": "2.4.11",
+    "@graphql-codegen/typescript-operations": "2.4.0",
+    "@graphql-codegen/typescript-react-query": "^3.5.12",
     "@types/react": "^18.0.11",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.27.0",

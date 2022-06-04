@@ -12,8 +12,7 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { NavigateState } from '../hooks/GlobalState';
-import useSupabase from '../hooks/Supabase';
+import { NavigateState, useUser } from '../hooks/GlobalState';
 
 const SignInPage = () => {
   const form = useForm({
@@ -26,14 +25,13 @@ const SignInPage = () => {
   const [state, setState] = useSetState({ loading: false, message: '' });
   const navigate = useNavigate();
   const location = useLocation() as NavigateState;
-  const supabase = useSupabase();
+  const user = useUser();
 
   const signIn = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const { session } = await supabase.auth.signIn(values);
-      if (session) {
-        console.log(session);
+      const hasError = await user.signIn(values);
+      if (hasError) {
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
         showNotification({ message: 'Successful sign in.' });
