@@ -46,3 +46,49 @@
 - 非同期処理のハンドリング
 - バリデーション
 - 多言語対応
+
+## ER図
+
+```mermaid
+erDiagram
+
+  users ||--|| profiles: ""
+  profiles ||--o{ members: ""
+  groups ||--o{ members: ""
+  groups ||--o{ events: ""
+  events ||--o{ event_schedules: ""
+
+  users {
+    id uuid PK
+    email varchar
+  }
+
+  profiles {
+    id uuid PK
+    nickname text
+    avator_url text
+  }
+
+  members {
+    group_id bigint PK
+    user_id uuid PK
+  }
+
+  groups {
+    id serial PK
+    name text
+  }
+
+  events {
+    id serial PK
+    name text
+    group_id bigint
+  }
+
+  event_schedules {
+    id serial PK
+    event_id bigint
+    start_date timestamptz
+    end_date timestamptz
+  }
+```

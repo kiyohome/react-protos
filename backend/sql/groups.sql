@@ -1,5 +1,5 @@
 drop policy if exists members_all_same_group_members on members;
-drop function if exists is_same_group_members
+drop function if exists is_same_group_members;
 drop policy if exists groups_delete_same_group_members on groups;
 drop policy if exists groups_update_same_group_members on groups;
 drop policy if exists groups_insert_authenticated on groups;
@@ -14,7 +14,7 @@ create table groups (
 
 create table members (
   group_id bigint references groups,
-  user_id uuid references auth.users,
+  user_id uuid references profiles,
   primary key (group_id, user_id)
 );
 
