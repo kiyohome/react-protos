@@ -30,7 +30,7 @@ const PageLayout = () => {
     menuOpened: false,
     loading: false,
   });
-  const [user] = useUser();
+  const [user, _] = useUser();
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },

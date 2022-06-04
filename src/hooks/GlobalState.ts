@@ -1,5 +1,7 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { useQuery, useQueryClient } from 'react-query';
 import { Location, useLocation } from 'react-router-dom';
+import useSupabase from './Supabase';
 
 const useGlobalState = <T>(
   key: string,
@@ -17,19 +19,30 @@ const useGlobalState = <T>(
 };
 
 class User {
-  id?: string;
+  private supabase: SupabaseClient;
 
-  name: string;
-
-  constructor(id?: string, name?: string) {
-    this.id = id;
-    this.name = name ?? 'guest';
+  constructor(supabase: SupabaseClient) {
+    this.supabase = supabase;
   }
 
-  isLoggedIn = () => this.id !== undefined;
+  get id(): string | undefined {
+    return this.supabase.auth.session()?.user?.id;
+  }
+
+  get name(): string {
+    return (
+      (this.supabase.auth.session()?.user?.user_metadata.nickname as string) ??
+      'guest'
+    );
+  }
+
+  isLoggedIn = (): boolean => this.id !== undefined;
 }
 
-const useUser = () => useGlobalState('user', new User());
+const useUser = () => {
+  const supabase = useSupabase();
+  return useGlobalState('user', new User(supabase));
+};
 
 type NavigateState = {
   state: {
