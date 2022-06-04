@@ -31,23 +31,27 @@
   - [React Query](https://react-query.tanstack.com/)
   - 参考にしたもの
     - [React Queryを状態管理ライブラリとして使い倒そう！/useQStateのススメ](https://qiita.com/uehaj/items/4e41e294181b3771e77a)
-- 認証
+- 認証と認可
   - [Supabase](https://supabase.com/docs/)
   - 参考にしたもの
     - [Login With Email](https://supabase.com/docs/guides/auth/auth-email)
-
-## これから含めるもの
-
+    - [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data)
+    - [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)
 - API
   - [GraphQL](https://graphql.org/)
   - 参考にしたもの
-    - [GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606)
+    - [supabase + GraphQL の String 検索で like を使えるようにする](https://zenn.dev/sora_kumo/articles/718f9af36891c6)
+
+## これから含めるもの
+
 - モックライブラリ
 - 非同期処理のハンドリング
 - バリデーション
 - 多言語対応
 
 ## ER図
+
+[Entity Relationship Diagrams](https://mermaid-js.github.io/mermaid/#/entityRelationshipDiagram?id=entity-relationship-diagrams)
 
 ```mermaid
 erDiagram
