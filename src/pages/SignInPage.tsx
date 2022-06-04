@@ -29,13 +29,10 @@ const SignInPage = () => {
   const location = useLocation() as NavigateState;
   const supabase = useSupabase();
 
-  const signIn = async (credentials: {
-    email: string;
-    password: string;
-  }): Promise<void> => {
+  const signIn = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const { user, session } = await supabase.auth.signIn(credentials);
+      const { user, session } = await supabase.auth.signIn(values);
       if (user) {
         console.log(user);
         console.log(session);

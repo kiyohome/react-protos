@@ -32,12 +32,7 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const supabase = useSupabase();
 
-  const signUp = async (values: {
-    nickname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }): Promise<void> => {
+  const signUp = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
       const { error } = await supabase.auth.signUp(
