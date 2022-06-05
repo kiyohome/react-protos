@@ -77,8 +77,9 @@ class User {
 const url = import.meta.env.VITE_SUPABASE_URL;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const endpoint = import.meta.env.VITE_SUPABASE_ENDPOINT;
+const persistSession = import.meta.env.VITE_SUPABASE_PERSIST_SESSION === 'yes';
 
-const supabaseClient = createClient(url, anonKey);
+const supabaseClient = createClient(url, anonKey, { persistSession });
 const user = new User(supabaseClient);
 
 const graphQLClient = new GraphQLClient(endpoint);
