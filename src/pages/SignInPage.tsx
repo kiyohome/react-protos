@@ -12,7 +12,9 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { NavigateState, useUser } from '../hooks/GlobalState';
+import { useAuth } from '../hooks/Auth';
+import { NavigateState } from '../hooks/NavigateState';
+import { User, useUser } from '../hooks/User';
 
 const SignInPage = () => {
   const form = useForm({
@@ -25,13 +27,18 @@ const SignInPage = () => {
   const [state, setState] = useSetState({ loading: false, message: '' });
   const navigate = useNavigate();
   const location = useLocation() as NavigateState;
-  const user = useUser();
+  const auth = useAuth();
+
+  const [, setUser] = useUser();
 
   const signIn = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const hasError = await user.signIn(values);
-      if (hasError) {
+
+      const isSuccess = await auth.signIn(values);
+      if (isSuccess) {
+        const profile = await auth.profile();
+        setUser(new User(profile.id, profile.nickname, profile.avatar_url));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
         showNotification({ message: 'Successful sign in.' });

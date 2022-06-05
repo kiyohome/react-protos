@@ -20,31 +20,38 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import logo from '../logo.svg';
-import { useUser } from '../hooks/GlobalState';
+import { useAuth } from '../hooks/Auth';
+import { useUser } from '../hooks/User';
 
 const PageLayout = () => {
   const theme = useMantineTheme();
+
   const [state, setState] = useSetState({
     navbarOpened: false,
     menuOpened: false,
     loading: false,
   });
-  const user = useUser();
+
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
+
+  const [user] = useUser();
+  const auth = useAuth();
+
   const signOut = async () => {
     try {
       setState({ loading: true });
-      await user.signOut();
+      await auth.signOut();
       showNotification({ message: 'Successful sign out.' });
       window.location.href = '/';
     } finally {
       setState({ loading: false });
     }
   };
+
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -108,16 +115,12 @@ const PageLayout = () => {
               onClose={() => setState({ menuOpened: false })}
               control={<Avatar radius="md" size="md" />}
             >
-              {user.isLoggedIn() ? (
-                <>
-                  <Menu.Label>Signed in as {user.name}</Menu.Label>
-                  <Divider />
-                  <Menu.Item onClick={signOut}>Sign out</Menu.Item>
-                </>
+              <Menu.Label>{user.name}</Menu.Label>
+              <Divider />
+              {auth.isSignedIn ? (
+                <Menu.Item onClick={signOut}>Sign out</Menu.Item>
               ) : (
                 <>
-                  <Menu.Label>Not signed in</Menu.Label>
-                  <Divider />
                   <Menu.Item onClick={() => navigate('/signin')}>
                     Sign in
                   </Menu.Item>

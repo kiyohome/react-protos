@@ -1,7 +1,11 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, UseQueryOptions } from 'react-query';
-
+import {
+  useQuery,
+  useMutation,
+  UseQueryOptions,
+  UseMutationOptions,
+} from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -30,13 +34,13 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  BigInt: any;
-  Cursor: any;
-  Date: any;
-  Datetime: any;
-  JSON: any;
-  Time: any;
-  UUID: any;
+  BigInt: number;
+  Cursor: number;
+  Date: string;
+  Datetime: string;
+  JSON: string;
+  Time: string;
+  UUID: string;
 };
 
 /** Boolean expression comparing fields on type "BigInt" */
@@ -316,6 +320,7 @@ export type StringFilter = {
   eq?: InputMaybe<Scalars['String']>;
   gt?: InputMaybe<Scalars['String']>;
   gte?: InputMaybe<Scalars['String']>;
+  like?: InputMaybe<Scalars['String']>;
   lt?: InputMaybe<Scalars['String']>;
   lte?: InputMaybe<Scalars['String']>;
   neq?: InputMaybe<Scalars['String']>;
@@ -340,7 +345,7 @@ export type UuidFilter = {
 export type Event_Schedules = {
   __typename?: 'event_schedules';
   end_date: Scalars['Datetime'];
-  event_id?: Maybe<Scalars['BigInt']>;
+  event_id?: Maybe<Scalars['Int']>;
   events?: Maybe<Events>;
   id: Scalars['Int'];
   start_date: Scalars['Datetime'];
@@ -368,14 +373,14 @@ export type Event_SchedulesEdge = {
 
 export type Event_SchedulesFilter = {
   end_date?: InputMaybe<DatetimeFilter>;
-  event_id?: InputMaybe<BigIntFilter>;
+  event_id?: InputMaybe<IntFilter>;
   id?: InputMaybe<IntFilter>;
   start_date?: InputMaybe<DatetimeFilter>;
 };
 
 export type Event_SchedulesInsertInput = {
   end_date?: InputMaybe<Scalars['Datetime']>;
-  event_id?: InputMaybe<Scalars['BigInt']>;
+  event_id?: InputMaybe<Scalars['Int']>;
   start_date?: InputMaybe<Scalars['Datetime']>;
 };
 
@@ -396,7 +401,7 @@ export type Event_SchedulesOrderBy = {
 
 export type Event_SchedulesUpdateInput = {
   end_date?: InputMaybe<Scalars['Datetime']>;
-  event_id?: InputMaybe<Scalars['BigInt']>;
+  event_id?: InputMaybe<Scalars['Int']>;
   start_date?: InputMaybe<Scalars['Datetime']>;
 };
 
@@ -411,7 +416,7 @@ export type Event_SchedulesUpdateResponse = {
 export type Events = {
   __typename?: 'events';
   event_schedulesCollection?: Maybe<Event_SchedulesConnection>;
-  group_id?: Maybe<Scalars['BigInt']>;
+  group_id?: Maybe<Scalars['Int']>;
   groups?: Maybe<Groups>;
   id: Scalars['Int'];
   name: Scalars['String'];
@@ -447,13 +452,13 @@ export type EventsEdge = {
 };
 
 export type EventsFilter = {
-  group_id?: InputMaybe<BigIntFilter>;
+  group_id?: InputMaybe<IntFilter>;
   id?: InputMaybe<IntFilter>;
   name?: InputMaybe<StringFilter>;
 };
 
 export type EventsInsertInput = {
-  group_id?: InputMaybe<Scalars['BigInt']>;
+  group_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -472,7 +477,7 @@ export type EventsOrderBy = {
 };
 
 export type EventsUpdateInput = {
-  group_id?: InputMaybe<Scalars['BigInt']>;
+  group_id?: InputMaybe<Scalars['Int']>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -566,7 +571,7 @@ export type GroupsUpdateResponse = {
 
 export type Members = {
   __typename?: 'members';
-  group_id: Scalars['BigInt'];
+  group_id: Scalars['Int'];
   groups?: Maybe<Groups>;
   profiles?: Maybe<Profiles>;
   user_id: Scalars['UUID'];
@@ -593,12 +598,12 @@ export type MembersEdge = {
 };
 
 export type MembersFilter = {
-  group_id?: InputMaybe<BigIntFilter>;
+  group_id?: InputMaybe<IntFilter>;
   user_id?: InputMaybe<UuidFilter>;
 };
 
 export type MembersInsertInput = {
-  group_id?: InputMaybe<Scalars['BigInt']>;
+  group_id?: InputMaybe<Scalars['Int']>;
   user_id?: InputMaybe<Scalars['UUID']>;
 };
 
@@ -616,7 +621,7 @@ export type MembersOrderBy = {
 };
 
 export type MembersUpdateInput = {
-  group_id?: InputMaybe<Scalars['BigInt']>;
+  group_id?: InputMaybe<Scalars['Int']>;
   user_id?: InputMaybe<Scalars['UUID']>;
 };
 
@@ -705,26 +710,150 @@ export type ProfilesUpdateResponse = {
   records: Array<Profiles>;
 };
 
-export type GetGroupsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetGroupsQueryVariables = Exact<{
+  userId: Scalars['UUID'];
+}>;
 
 export type GetGroupsQuery = {
   __typename?: 'Query';
-  groupsCollection?: {
-    __typename?: 'groupsConnection';
+  membersCollection?: {
+    __typename?: 'membersConnection';
     edges: Array<{
-      __typename?: 'groupsEdge';
-      node?: { __typename?: 'groups'; id: number; name: string } | null;
+      __typename?: 'membersEdge';
+      node?: {
+        __typename?: 'members';
+        groups?: {
+          __typename?: 'groups';
+          id: number;
+          name: string;
+          membersCollection?: {
+            __typename?: 'membersConnection';
+            edges: Array<{
+              __typename?: 'membersEdge';
+              node?: {
+                __typename?: 'members';
+                profiles?: {
+                  __typename?: 'profiles';
+                  id: string;
+                  nickname: string;
+                  avatar_url?: string | null;
+                } | null;
+              } | null;
+            }>;
+          } | null;
+        } | null;
+      } | null;
+    }>;
+  } | null;
+};
+
+export type AddGroupMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+export type AddGroupMutation = {
+  __typename?: 'Mutation';
+  insertIntogroupsCollection?: {
+    __typename?: 'groupsInsertResponse';
+    records: Array<{ __typename?: 'groups'; id: number }>;
+  } | null;
+};
+
+export type AddMemberMutationVariables = Exact<{
+  grougId: Scalars['Int'];
+  userId: Scalars['UUID'];
+}>;
+
+export type AddMemberMutation = {
+  __typename?: 'Mutation';
+  insertIntomembersCollection?: {
+    __typename?: 'membersInsertResponse';
+    records: Array<{
+      __typename?: 'members';
+      group_id: number;
+      user_id: string;
+    }>;
+  } | null;
+};
+
+export type RemoveMemberMutationVariables = Exact<{
+  grougId: Scalars['Int'];
+  userId: Scalars['UUID'];
+}>;
+
+export type RemoveMemberMutation = {
+  __typename?: 'Mutation';
+  deleteFrommembersCollection: {
+    __typename?: 'membersDeleteResponse';
+    records: Array<{
+      __typename?: 'members';
+      group_id: number;
+      user_id: string;
+    }>;
+  };
+};
+
+export type GetProfileQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+export type GetProfileQuery = {
+  __typename?: 'Query';
+  profilesCollection?: {
+    __typename?: 'profilesConnection';
+    edges: Array<{
+      __typename?: 'profilesEdge';
+      node?: {
+        __typename?: 'profiles';
+        id: string;
+        nickname: string;
+        avatar_url?: string | null;
+      } | null;
+    }>;
+  } | null;
+};
+
+export type FindProfileQueryVariables = Exact<{
+  first: Scalars['Int'];
+  likeName: Scalars['String'];
+}>;
+
+export type FindProfileQuery = {
+  __typename?: 'Query';
+  profilesCollection?: {
+    __typename?: 'profilesConnection';
+    edges: Array<{
+      __typename?: 'profilesEdge';
+      node?: {
+        __typename?: 'profiles';
+        id: string;
+        nickname: string;
+        avatar_url?: string | null;
+      } | null;
     }>;
   } | null;
 };
 
 export const GetGroupsDocument = `
-    query getGroups {
-  groupsCollection {
+    query getGroups($userId: UUID!) {
+  membersCollection(filter: {user_id: {eq: $userId}}) {
     edges {
       node {
-        id
-        name
+        groups {
+          id
+          name
+          membersCollection {
+            edges {
+              node {
+                profiles {
+                  id
+                  nickname
+                  avatar_url
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -732,15 +861,172 @@ export const GetGroupsDocument = `
     `;
 export const useGetGroupsQuery = <TData = GetGroupsQuery, TError = unknown>(
   client: GraphQLClient,
-  variables?: GetGroupsQueryVariables,
+  variables: GetGroupsQueryVariables,
   options?: UseQueryOptions<GetGroupsQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
   useQuery<GetGroupsQuery, TError, TData>(
-    variables === undefined ? ['getGroups'] : ['getGroups', variables],
+    ['getGroups', variables],
     fetcher<GetGroupsQuery, GetGroupsQueryVariables>(
       client,
       GetGroupsDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+export const AddGroupDocument = `
+    mutation addGroup($name: String!) {
+  insertIntogroupsCollection(objects: [{name: $name}]) {
+    records {
+      id
+    }
+  }
+}
+    `;
+export const useAddGroupMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    AddGroupMutation,
+    TError,
+    AddGroupMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<AddGroupMutation, TError, AddGroupMutationVariables, TContext>(
+    ['addGroup'],
+    (variables?: AddGroupMutationVariables) =>
+      fetcher<AddGroupMutation, AddGroupMutationVariables>(
+        client,
+        AddGroupDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+export const AddMemberDocument = `
+    mutation addMember($grougId: Int!, $userId: UUID!) {
+  insertIntomembersCollection(objects: {group_id: $grougId, user_id: $userId}) {
+    records {
+      group_id
+      user_id
+    }
+  }
+}
+    `;
+export const useAddMemberMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    AddMemberMutation,
+    TError,
+    AddMemberMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<AddMemberMutation, TError, AddMemberMutationVariables, TContext>(
+    ['addMember'],
+    (variables?: AddMemberMutationVariables) =>
+      fetcher<AddMemberMutation, AddMemberMutationVariables>(
+        client,
+        AddMemberDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+export const RemoveMemberDocument = `
+    mutation removeMember($grougId: Int!, $userId: UUID!) {
+  deleteFrommembersCollection(
+    filter: {group_id: {eq: $grougId}, user_id: {eq: $userId}}
+  ) {
+    records {
+      group_id
+      user_id
+    }
+  }
+}
+    `;
+export const useRemoveMemberMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    RemoveMemberMutation,
+    TError,
+    RemoveMemberMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    RemoveMemberMutation,
+    TError,
+    RemoveMemberMutationVariables,
+    TContext
+  >(
+    ['removeMember'],
+    (variables?: RemoveMemberMutationVariables) =>
+      fetcher<RemoveMemberMutation, RemoveMemberMutationVariables>(
+        client,
+        RemoveMemberDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+export const GetProfileDocument = `
+    query getProfile($id: UUID!) {
+  profilesCollection(filter: {id: {eq: $id}}) {
+    edges {
+      node {
+        id
+        nickname
+        avatar_url
+      }
+    }
+  }
+}
+    `;
+export const useGetProfileQuery = <TData = GetProfileQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: GetProfileQueryVariables,
+  options?: UseQueryOptions<GetProfileQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<GetProfileQuery, TError, TData>(
+    ['getProfile', variables],
+    fetcher<GetProfileQuery, GetProfileQueryVariables>(
+      client,
+      GetProfileDocument,
+      variables,
+      headers
+    ),
+    options
+  );
+export const FindProfileDocument = `
+    query findProfile($first: Int!, $likeName: String!) {
+  profilesCollection(first: $first, filter: {nickname: {like: $likeName}}) {
+    edges {
+      node {
+        id
+        nickname
+        avatar_url
+      }
+    }
+  }
+}
+    `;
+export const useFindProfileQuery = <TData = FindProfileQuery, TError = unknown>(
+  client: GraphQLClient,
+  variables: FindProfileQueryVariables,
+  options?: UseQueryOptions<FindProfileQuery, TError, TData>,
+  headers?: RequestInit['headers']
+) =>
+  useQuery<FindProfileQuery, TError, TData>(
+    ['findProfile', variables],
+    fetcher<FindProfileQuery, FindProfileQueryVariables>(
+      client,
+      FindProfileDocument,
       variables,
       headers
     ),

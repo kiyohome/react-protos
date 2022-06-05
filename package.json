@@ -9,7 +9,7 @@
     "lint": "yarn lint:fmt && yarn lint:fix",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "lint:fmt": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json}",
-    "generate": "graphql-codegen -v -r dotenv/config --config codegen.yml"
+    "generate": "graphql-codegen -r dotenv/config --config codegen.yml"
   },
   "dependencies": {
     "@mantine/core": "^4.2.7",

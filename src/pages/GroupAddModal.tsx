@@ -8,6 +8,10 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
+import { useQueryClient } from 'react-query';
+import { useAddGroupMutation } from '../generated/graphql';
+import useGraphQLClient from '../hooks/GraphQLClient';
+import { useUser } from '../hooks/User';
 
 type Props = {
   opened: boolean;
@@ -20,12 +24,27 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
       name: '',
     },
   });
+
   const [state, setState] = useSetState({ message: '', loading: false });
 
-  const addGroup = async (values: { name: string }) => {
+  const graphQLClient = useGraphQLClient();
+  const mutation = useAddGroupMutation(graphQLClient);
+  const queryClient = useQueryClient();
+  const [user] = useUser();
+
+  const addGroup = async (values: typeof form.values) => {
     try {
       setState({ loading: true });
-      console.log(values);
+
+      await mutation.mutateAsync(values, {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries([
+            'getGroups',
+            { userId: user.id },
+          ]);
+        },
+      });
+
       onClose();
     } finally {
       setState({ loading: false });

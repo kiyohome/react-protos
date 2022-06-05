@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useUser } from '../hooks/GlobalState';
+import { useAuth } from '../hooks/Auth';
 
 type Props = {
   children: ReactNode;
@@ -8,8 +8,8 @@ type Props = {
 
 const AccessControl = ({ children }: Props) => {
   const location = useLocation();
-  const user = useUser();
-  return user.isLoggedIn() ? (
+  const auth = useAuth();
+  return auth.isSignedIn ? (
     <>{children}</>
   ) : (
     <Navigate to="/signin" state={{ from: location }} replace />

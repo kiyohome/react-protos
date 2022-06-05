@@ -12,7 +12,7 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../hooks/GlobalState';
+import { useAuth } from '../hooks/Auth';
 
 const SignUpPage = () => {
   const form = useForm({
@@ -30,12 +30,14 @@ const SignUpPage = () => {
 
   const [state, setState] = useSetState({ loading: false, messaage: '' });
   const navigate = useNavigate();
-  const user = useUser();
+
+  const auth = useAuth();
 
   const signUp = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const error = await user.signUp(values);
+
+      const error = await auth.signUp(values);
       if (error) {
         setState({ messaage: error.message });
       } else {

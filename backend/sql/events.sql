@@ -1,20 +1,17 @@
 drop policy if exists event_schedules_all_same_group_members on event_schedules;
-drop policy if exists events_delete_same_group_members on events;
-drop policy if exists events_update_same_group_members on events;
-drop policy if exists events_insert_authenticated on events;
-drop policy if exists events_select_same_group_members on events;
+drop policy if exists events_all_same_group_members on events;
 drop table if exists event_schedules;
 drop table if exists events;
 
 create table events (
   id serial primary key,
   name text unique not null,
-  group_id bigint references groups
+  group_id integer references groups
 );
 
 create table event_schedules (
   id serial primary key,
-  event_id bigint references events,
+  event_id integer references events,
   start_date timestamptz not null,
   end_date timestamptz not null
 );
@@ -24,38 +21,20 @@ alter table events enable row level security;
 /*
 イベント
 SELECT：同じグループのメンバーのみ
-INSERT：ログインユーザーのみ
+INSERT：同じグループのメンバーのみ
 UPDATE：同じグループのメンバーのみ
 DELETE：同じグループのメンバーのみ
 */
 
-create policy events_select_same_group_members
+create policy events_all_same_group_members
   on events
-  for select
+  for all
   using (
     group_id in (
       select m.group_id from members m where m.user_id = auth.uid()
     )
-  );
-
-create policy events_insert_authenticated
-  on events
-  for insert
-  to authenticated;
-
-create policy events_update_same_group_members
-  on events
-  for update
-  using (
-    group_id in (
-      select m.group_id from members m where m.user_id = auth.uid()
-    )
-  );
-
-create policy events_delete_same_group_members
-  on events
-  for delete
-  using (
+  )
+  with check (
     group_id in (
       select m.group_id from members m where m.user_id = auth.uid()
     )

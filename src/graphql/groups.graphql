@@ -1,10 +1,53 @@
-query getGroups {
-  groupsCollection {
+query getGroups($userId: UUID!) {
+  membersCollection(filter: { user_id: { eq: $userId } }) {
     edges {
       node {
-        id
-        name
+        groups {
+          id
+          name
+          membersCollection {
+            edges {
+              node {
+                profiles {
+                  id
+                  nickname
+                  avatar_url
+                }
+              }
+            }
+          }
+        }
       }
+    }
+  }
+}
+
+mutation addGroup($name: String!) {
+  insertIntogroupsCollection(objects: [{ name: $name }]) {
+    records {
+      id
+    }
+  }
+}
+
+mutation addMember($grougId: Int!, $userId: UUID!) {
+  insertIntomembersCollection(
+    objects: { group_id: $grougId, user_id: $userId }
+  ) {
+    records {
+      group_id
+      user_id
+    }
+  }
+}
+
+mutation removeMember($grougId: Int!, $userId: UUID!) {
+  deleteFrommembersCollection(
+    filter: { group_id: { eq: $grougId }, user_id: { eq: $userId } }
+  ) {
+    records {
+      group_id
+      user_id
     }
   }
 }

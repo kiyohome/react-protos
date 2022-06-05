@@ -13,3 +13,14 @@ generates:
     config:
       fetcher: 'graphql-request'
       isReactHook: true
+      scalars:
+        BigInt: number
+        Cursor: number
+        Date: string
+        Datetime: string
+        JSON: string
+        Time: string
+        UUID: string
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
