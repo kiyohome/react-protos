@@ -54,6 +54,24 @@
 - 多言語対応
 - モックライブラリ
 
+## 動かすまで
+
+- [Supabase](https://supabase.com/docs/)でプロジェクトを作ります。
+- src/.envファイルを作成して環境変数を設定します。
+  ```
+  VITE_SUPABASE_URL=プロジェクトのURL
+  VITE_SUPABASE_ENDPOINT=プロジェクトのGraphQLのURL
+  VITE_SUPABASE_ANON_KEY=プロジェクトのAPIキー（anonキー）
+  VITE_SUPABASE_PERSIST_SESSION=no
+  ```
+- Supabaseのダッシュボードからテーブルとテストデータを作成します。
+  - TODO: 作成手順
+- 次のコマンドでアプリを起動します。
+  ```
+  $ yarn
+  $ yarn dev
+  ```
+
 ## ER図
 
 [Entity Relationship Diagrams](https://mermaid-js.github.io/mermaid/#/entityRelationshipDiagram?id=entity-relationship-diagrams)
