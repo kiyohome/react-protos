@@ -1,16 +1,4 @@
-query getProfile($id: UUID!) {
-  profilesCollection(filter: { id: { eq: $id } }) {
-    edges {
-      node {
-        id
-        nickname
-        avatar_url
-      }
-    }
-  }
-}
-
-query findProfile($first: Int!, $likeName: String!) {
+query findProfiles($first: Int!, $likeName: String!) {
   profilesCollection(first: $first, filter: { nickname: { like: $likeName } }) {
     edges {
       node {

@@ -36,14 +36,17 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
     try {
       setState({ loading: true });
 
-      await mutation.mutateAsync(values, {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries([
-            'getGroups',
-            { userId: user.id },
-          ]);
-        },
-      });
+      await mutation.mutateAsync(
+        { ...values, owner: user.id },
+        {
+          onSuccess: async () => {
+            await queryClient.invalidateQueries([
+              'findGroups',
+              { userId: user.id },
+            ]);
+          },
+        }
+      );
 
       onClose();
     } finally {

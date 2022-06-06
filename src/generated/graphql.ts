@@ -111,7 +111,6 @@ export type JsonFilter = {
 
 /** The root type for creating and mutating data */
 export type Mutation = {
-  __typename?: 'Mutation';
   /** Deletes zero or more records from the collection */
   deleteFromevent_schedulesCollection: Event_SchedulesDeleteResponse;
   /** Deletes zero or more records from the collection */
@@ -243,7 +242,6 @@ export enum OrderByDirection {
 }
 
 export type PageInfo = {
-  __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['String']>;
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
@@ -252,7 +250,6 @@ export type PageInfo = {
 
 /** The root type for querying data */
 export type Query = {
-  __typename?: 'Query';
   /** A pagable collection of type `event_schedules` */
   event_schedulesCollection?: Maybe<Event_SchedulesConnection>;
   /** A pagable collection of type `events` */
@@ -343,7 +340,6 @@ export type UuidFilter = {
 };
 
 export type Event_Schedules = {
-  __typename?: 'event_schedules';
   end_date: Scalars['Datetime'];
   event_id?: Maybe<Scalars['Int']>;
   events?: Maybe<Events>;
@@ -352,13 +348,11 @@ export type Event_Schedules = {
 };
 
 export type Event_SchedulesConnection = {
-  __typename?: 'event_schedulesConnection';
   edges: Array<Event_SchedulesEdge>;
   pageInfo: PageInfo;
 };
 
 export type Event_SchedulesDeleteResponse = {
-  __typename?: 'event_schedulesDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -366,7 +360,6 @@ export type Event_SchedulesDeleteResponse = {
 };
 
 export type Event_SchedulesEdge = {
-  __typename?: 'event_schedulesEdge';
   cursor: Scalars['String'];
   node?: Maybe<Event_Schedules>;
 };
@@ -385,7 +378,6 @@ export type Event_SchedulesInsertInput = {
 };
 
 export type Event_SchedulesInsertResponse = {
-  __typename?: 'event_schedulesInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -406,7 +398,6 @@ export type Event_SchedulesUpdateInput = {
 };
 
 export type Event_SchedulesUpdateResponse = {
-  __typename?: 'event_schedulesUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -414,7 +405,6 @@ export type Event_SchedulesUpdateResponse = {
 };
 
 export type Events = {
-  __typename?: 'events';
   event_schedulesCollection?: Maybe<Event_SchedulesConnection>;
   group_id?: Maybe<Scalars['Int']>;
   groups?: Maybe<Groups>;
@@ -432,13 +422,11 @@ export type EventsEvent_SchedulesCollectionArgs = {
 };
 
 export type EventsConnection = {
-  __typename?: 'eventsConnection';
   edges: Array<EventsEdge>;
   pageInfo: PageInfo;
 };
 
 export type EventsDeleteResponse = {
-  __typename?: 'eventsDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -446,7 +434,6 @@ export type EventsDeleteResponse = {
 };
 
 export type EventsEdge = {
-  __typename?: 'eventsEdge';
   cursor: Scalars['String'];
   node?: Maybe<Events>;
 };
@@ -463,7 +450,6 @@ export type EventsInsertInput = {
 };
 
 export type EventsInsertResponse = {
-  __typename?: 'eventsInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -482,7 +468,6 @@ export type EventsUpdateInput = {
 };
 
 export type EventsUpdateResponse = {
-  __typename?: 'eventsUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -490,11 +475,12 @@ export type EventsUpdateResponse = {
 };
 
 export type Groups = {
-  __typename?: 'groups';
   eventsCollection?: Maybe<EventsConnection>;
   id: Scalars['Int'];
   membersCollection?: Maybe<MembersConnection>;
   name: Scalars['String'];
+  owner?: Maybe<Scalars['UUID']>;
+  profiles?: Maybe<Profiles>;
 };
 
 export type GroupsEventsCollectionArgs = {
@@ -516,13 +502,11 @@ export type GroupsMembersCollectionArgs = {
 };
 
 export type GroupsConnection = {
-  __typename?: 'groupsConnection';
   edges: Array<GroupsEdge>;
   pageInfo: PageInfo;
 };
 
 export type GroupsDeleteResponse = {
-  __typename?: 'groupsDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -530,7 +514,6 @@ export type GroupsDeleteResponse = {
 };
 
 export type GroupsEdge = {
-  __typename?: 'groupsEdge';
   cursor: Scalars['String'];
   node?: Maybe<Groups>;
 };
@@ -538,14 +521,15 @@ export type GroupsEdge = {
 export type GroupsFilter = {
   id?: InputMaybe<IntFilter>;
   name?: InputMaybe<StringFilter>;
+  owner?: InputMaybe<UuidFilter>;
 };
 
 export type GroupsInsertInput = {
   name?: InputMaybe<Scalars['String']>;
+  owner?: InputMaybe<Scalars['UUID']>;
 };
 
 export type GroupsInsertResponse = {
-  __typename?: 'groupsInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -555,14 +539,15 @@ export type GroupsInsertResponse = {
 export type GroupsOrderBy = {
   id?: InputMaybe<OrderByDirection>;
   name?: InputMaybe<OrderByDirection>;
+  owner?: InputMaybe<OrderByDirection>;
 };
 
 export type GroupsUpdateInput = {
   name?: InputMaybe<Scalars['String']>;
+  owner?: InputMaybe<Scalars['UUID']>;
 };
 
 export type GroupsUpdateResponse = {
-  __typename?: 'groupsUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -570,7 +555,6 @@ export type GroupsUpdateResponse = {
 };
 
 export type Members = {
-  __typename?: 'members';
   group_id: Scalars['Int'];
   groups?: Maybe<Groups>;
   profiles?: Maybe<Profiles>;
@@ -578,13 +562,11 @@ export type Members = {
 };
 
 export type MembersConnection = {
-  __typename?: 'membersConnection';
   edges: Array<MembersEdge>;
   pageInfo: PageInfo;
 };
 
 export type MembersDeleteResponse = {
-  __typename?: 'membersDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -592,7 +574,6 @@ export type MembersDeleteResponse = {
 };
 
 export type MembersEdge = {
-  __typename?: 'membersEdge';
   cursor: Scalars['String'];
   node?: Maybe<Members>;
 };
@@ -608,7 +589,6 @@ export type MembersInsertInput = {
 };
 
 export type MembersInsertResponse = {
-  __typename?: 'membersInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -626,7 +606,6 @@ export type MembersUpdateInput = {
 };
 
 export type MembersUpdateResponse = {
-  __typename?: 'membersUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -634,11 +613,20 @@ export type MembersUpdateResponse = {
 };
 
 export type Profiles = {
-  __typename?: 'profiles';
   avatar_url?: Maybe<Scalars['String']>;
+  groupsCollection?: Maybe<GroupsConnection>;
   id: Scalars['UUID'];
   membersCollection?: Maybe<MembersConnection>;
   nickname: Scalars['String'];
+};
+
+export type ProfilesGroupsCollectionArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<GroupsFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<GroupsOrderBy>>;
 };
 
 export type ProfilesMembersCollectionArgs = {
@@ -651,13 +639,11 @@ export type ProfilesMembersCollectionArgs = {
 };
 
 export type ProfilesConnection = {
-  __typename?: 'profilesConnection';
   edges: Array<ProfilesEdge>;
   pageInfo: PageInfo;
 };
 
 export type ProfilesDeleteResponse = {
-  __typename?: 'profilesDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -665,7 +651,6 @@ export type ProfilesDeleteResponse = {
 };
 
 export type ProfilesEdge = {
-  __typename?: 'profilesEdge';
   cursor: Scalars['String'];
   node?: Maybe<Profiles>;
 };
@@ -683,7 +668,6 @@ export type ProfilesInsertInput = {
 };
 
 export type ProfilesInsertResponse = {
-  __typename?: 'profilesInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -703,37 +687,27 @@ export type ProfilesUpdateInput = {
 };
 
 export type ProfilesUpdateResponse = {
-  __typename?: 'profilesUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
   records: Array<Profiles>;
 };
 
-export type GetGroupsQueryVariables = Exact<{
+export type FindGroupsQueryVariables = Exact<{
   userId: Scalars['UUID'];
 }>;
 
-export type GetGroupsQuery = {
-  __typename?: 'Query';
+export type FindGroupsQuery = {
   membersCollection?: {
-    __typename?: 'membersConnection';
     edges: Array<{
-      __typename?: 'membersEdge';
       node?: {
-        __typename?: 'members';
         groups?: {
-          __typename?: 'groups';
           id: number;
           name: string;
           membersCollection?: {
-            __typename?: 'membersConnection';
             edges: Array<{
-              __typename?: 'membersEdge';
               node?: {
-                __typename?: 'members';
                 profiles?: {
-                  __typename?: 'profiles';
                   id: string;
                   nickname: string;
                   avatar_url?: string | null;
@@ -749,14 +723,22 @@ export type GetGroupsQuery = {
 
 export type AddGroupMutationVariables = Exact<{
   name: Scalars['String'];
+  owner: Scalars['UUID'];
 }>;
 
 export type AddGroupMutation = {
-  __typename?: 'Mutation';
-  insertIntogroupsCollection?: {
-    __typename?: 'groupsInsertResponse';
-    records: Array<{ __typename?: 'groups'; id: number }>;
-  } | null;
+  insertIntogroupsCollection?: { records: Array<{ id: number }> } | null;
+};
+
+export type RemoveGroupMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+}>;
+
+export type RemoveGroupMutation = {
+  deleteFrommembersCollection: {
+    records: Array<{ group_id: number; user_id: string }>;
+  };
+  deleteFromgroupsCollection: { records: Array<{ id: number }> };
 };
 
 export type AddMemberMutationVariables = Exact<{
@@ -765,14 +747,8 @@ export type AddMemberMutationVariables = Exact<{
 }>;
 
 export type AddMemberMutation = {
-  __typename?: 'Mutation';
   insertIntomembersCollection?: {
-    __typename?: 'membersInsertResponse';
-    records: Array<{
-      __typename?: 'members';
-      group_id: number;
-      user_id: string;
-    }>;
+    records: Array<{ group_id: number; user_id: string }>;
   } | null;
 };
 
@@ -782,50 +758,20 @@ export type RemoveMemberMutationVariables = Exact<{
 }>;
 
 export type RemoveMemberMutation = {
-  __typename?: 'Mutation';
   deleteFrommembersCollection: {
-    __typename?: 'membersDeleteResponse';
-    records: Array<{
-      __typename?: 'members';
-      group_id: number;
-      user_id: string;
-    }>;
+    records: Array<{ group_id: number; user_id: string }>;
   };
 };
 
-export type GetProfileQueryVariables = Exact<{
-  id: Scalars['UUID'];
-}>;
-
-export type GetProfileQuery = {
-  __typename?: 'Query';
-  profilesCollection?: {
-    __typename?: 'profilesConnection';
-    edges: Array<{
-      __typename?: 'profilesEdge';
-      node?: {
-        __typename?: 'profiles';
-        id: string;
-        nickname: string;
-        avatar_url?: string | null;
-      } | null;
-    }>;
-  } | null;
-};
-
-export type FindProfileQueryVariables = Exact<{
+export type FindProfilesQueryVariables = Exact<{
   first: Scalars['Int'];
   likeName: Scalars['String'];
 }>;
 
-export type FindProfileQuery = {
-  __typename?: 'Query';
+export type FindProfilesQuery = {
   profilesCollection?: {
-    __typename?: 'profilesConnection';
     edges: Array<{
-      __typename?: 'profilesEdge';
       node?: {
-        __typename?: 'profiles';
         id: string;
         nickname: string;
         avatar_url?: string | null;
@@ -834,8 +780,8 @@ export type FindProfileQuery = {
   } | null;
 };
 
-export const GetGroupsDocument = `
-    query getGroups($userId: UUID!) {
+export const FindGroupsDocument = `
+    query findGroups($userId: UUID!) {
   membersCollection(filter: {user_id: {eq: $userId}}) {
     edges {
       node {
@@ -859,25 +805,25 @@ export const GetGroupsDocument = `
   }
 }
     `;
-export const useGetGroupsQuery = <TData = GetGroupsQuery, TError = unknown>(
+export const useFindGroupsQuery = <TData = FindGroupsQuery, TError = unknown>(
   client: GraphQLClient,
-  variables: GetGroupsQueryVariables,
-  options?: UseQueryOptions<GetGroupsQuery, TError, TData>,
+  variables: FindGroupsQueryVariables,
+  options?: UseQueryOptions<FindGroupsQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<GetGroupsQuery, TError, TData>(
-    ['getGroups', variables],
-    fetcher<GetGroupsQuery, GetGroupsQueryVariables>(
+  useQuery<FindGroupsQuery, TError, TData>(
+    ['findGroups', variables],
+    fetcher<FindGroupsQuery, FindGroupsQueryVariables>(
       client,
-      GetGroupsDocument,
+      FindGroupsDocument,
       variables,
       headers
     ),
     options
   );
 export const AddGroupDocument = `
-    mutation addGroup($name: String!) {
-  insertIntogroupsCollection(objects: [{name: $name}]) {
+    mutation addGroup($name: String!, $owner: UUID!) {
+  insertIntogroupsCollection(objects: [{name: $name, owner: $owner}]) {
     records {
       id
     }
@@ -900,6 +846,47 @@ export const useAddGroupMutation = <TError = unknown, TContext = unknown>(
       fetcher<AddGroupMutation, AddGroupMutationVariables>(
         client,
         AddGroupDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+export const RemoveGroupDocument = `
+    mutation removeGroup($groupId: Int!) {
+  deleteFrommembersCollection(filter: {group_id: {eq: $groupId}}) {
+    records {
+      group_id
+      user_id
+    }
+  }
+  deleteFromgroupsCollection(filter: {id: {eq: $groupId}}) {
+    records {
+      id
+    }
+  }
+}
+    `;
+export const useRemoveGroupMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    RemoveGroupMutation,
+    TError,
+    RemoveGroupMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    RemoveGroupMutation,
+    TError,
+    RemoveGroupMutationVariables,
+    TContext
+  >(
+    ['removeGroup'],
+    (variables?: RemoveGroupMutationVariables) =>
+      fetcher<RemoveGroupMutation, RemoveGroupMutationVariables>(
+        client,
+        RemoveGroupDocument,
         variables,
         headers
       )(),
@@ -974,37 +961,8 @@ export const useRemoveMemberMutation = <TError = unknown, TContext = unknown>(
       )(),
     options
   );
-export const GetProfileDocument = `
-    query getProfile($id: UUID!) {
-  profilesCollection(filter: {id: {eq: $id}}) {
-    edges {
-      node {
-        id
-        nickname
-        avatar_url
-      }
-    }
-  }
-}
-    `;
-export const useGetProfileQuery = <TData = GetProfileQuery, TError = unknown>(
-  client: GraphQLClient,
-  variables: GetProfileQueryVariables,
-  options?: UseQueryOptions<GetProfileQuery, TError, TData>,
-  headers?: RequestInit['headers']
-) =>
-  useQuery<GetProfileQuery, TError, TData>(
-    ['getProfile', variables],
-    fetcher<GetProfileQuery, GetProfileQueryVariables>(
-      client,
-      GetProfileDocument,
-      variables,
-      headers
-    ),
-    options
-  );
-export const FindProfileDocument = `
-    query findProfile($first: Int!, $likeName: String!) {
+export const FindProfilesDocument = `
+    query findProfiles($first: Int!, $likeName: String!) {
   profilesCollection(first: $first, filter: {nickname: {like: $likeName}}) {
     edges {
       node {
@@ -1016,17 +974,20 @@ export const FindProfileDocument = `
   }
 }
     `;
-export const useFindProfileQuery = <TData = FindProfileQuery, TError = unknown>(
+export const useFindProfilesQuery = <
+  TData = FindProfilesQuery,
+  TError = unknown
+>(
   client: GraphQLClient,
-  variables: FindProfileQueryVariables,
-  options?: UseQueryOptions<FindProfileQuery, TError, TData>,
+  variables: FindProfilesQueryVariables,
+  options?: UseQueryOptions<FindProfilesQuery, TError, TData>,
   headers?: RequestInit['headers']
 ) =>
-  useQuery<FindProfileQuery, TError, TData>(
-    ['findProfile', variables],
-    fetcher<FindProfileQuery, FindProfileQueryVariables>(
+  useQuery<FindProfilesQuery, TError, TData>(
+    ['findProfiles', variables],
+    fetcher<FindProfilesQuery, FindProfilesQueryVariables>(
       client,
-      FindProfileDocument,
+      FindProfilesDocument,
       variables,
       headers
     ),

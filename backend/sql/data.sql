@@ -1,11 +1,11 @@
-insert into groups (name) values ('会津若松');
-insert into groups (name) values ('喜多方');
-insert into groups (name) values ('湊');
+insert into groups (name, owner) values ('会津若松', 'AAAAA');
+insert into groups (name, owner) values ('喜多方', 'AAAAA');
+insert into groups (name, owner) values ('湊', 'BBBBB');
 
-insert into members (group_id, user_id) values (1, 'KIユーザー');
-insert into members (group_id, user_id)  values (1, 'CKユーザー');
-insert into members (group_id, user_id)  values (2, 'Aユーザー');
-insert into members (group_id, user_id)  values (3, 'CKユーザー');
+insert into members (group_id, user_id) values (1, 'AAAAA');
+insert into members (group_id, user_id)  values (1, 'BBBBB');
+insert into members (group_id, user_id)  values (2, 'AAAAA');
+insert into members (group_id, user_id)  values (3, 'BBBBB');
 
 insert into events (name, group_id) values ('さくらまつり', 1);
 insert into events (name, group_id) values ('会津祭り', 1);

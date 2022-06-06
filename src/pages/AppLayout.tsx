@@ -19,11 +19,14 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryErrorResetBoundary } from 'react-query';
+import { ErrorBoundary } from 'react-error-boundary';
 import logo from '../logo.svg';
 import { useAuth } from '../hooks/Auth';
 import { useUser } from '../hooks/User';
+import ErrorPage from './ErrorPage';
 
-const PageLayout = () => {
+const AppLayout = () => {
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({
@@ -51,6 +54,8 @@ const PageLayout = () => {
       setState({ loading: false });
     }
   };
+
+  const { reset } = useQueryErrorResetBoundary();
 
   return (
     <AppShell
@@ -140,9 +145,11 @@ const PageLayout = () => {
       }
     >
       <LoadingOverlay visible={state.loading} />
-      <Outlet />
+      <ErrorBoundary onReset={reset} fallback={<ErrorPage />}>
+        <Outlet />
+      </ErrorBoundary>
     </AppShell>
   );
 };
 
-export default PageLayout;
+export default AppLayout;

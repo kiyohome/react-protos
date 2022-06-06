@@ -11,6 +11,7 @@ generates:
       - 'typescript-operations'
       - 'typescript-react-query'
     config:
+      skipTypename: true
       fetcher: 'graphql-request'
       isReactHook: true
       scalars:

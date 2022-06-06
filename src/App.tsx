@@ -10,6 +10,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import RouterConfig from './RouterConfig';
 import './App.css';
 
@@ -47,6 +48,7 @@ const App = () => (
           <RouterConfig />
         </NotificationsProvider>
       </MantineProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 );

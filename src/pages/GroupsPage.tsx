@@ -1,7 +1,8 @@
 import { Anchor, Group, Table, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { Suspense } from 'react';
-import { useGetGroupsQuery } from '../generated/graphql';
+import { Link } from 'react-router-dom';
+import { useFindGroupsQuery } from '../generated/graphql';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';
 import GroupAddModal from './GroupAddModal';
@@ -10,13 +11,22 @@ import Loading from './Loading';
 const Groups = () => {
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
-  const { data } = useGetGroupsQuery(graphQLClient, { userId: user.id });
+
+  const { data } = useFindGroupsQuery(graphQLClient, { userId: user.id });
 
   const rows = data?.membersCollection?.edges.map((memberEdge) => {
     const group = memberEdge.node?.groups;
     return (
       <tr key={group?.id}>
-        <td>{group?.name}</td>
+        <td>
+          <Anchor
+            component={Link}
+            to={`/groups/${group?.id ?? ''}`}
+            underline={false}
+          >
+            {group?.name}
+          </Anchor>
+        </td>
         <td>
           {group?.membersCollection?.edges.map((groupMemberEdge) => {
             const profile = groupMemberEdge.node?.profiles;
@@ -45,12 +55,16 @@ const GroupsPage = () => {
 
   return (
     <>
-      <Group position="apart">
+      <Group>
         <Title order={3}>Gropus</Title>
+      </Group>
+      <Group mt="md">
         <Anchor onClick={() => setState({ addOpened: true })}>Add</Anchor>
       </Group>
       <Suspense fallback={<Loading />}>
-        <Groups />
+        <Group mt="md">
+          <Groups />
+        </Group>
       </Suspense>
       <GroupAddModal
         opened={state.addOpened}

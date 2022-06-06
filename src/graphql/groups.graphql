@@ -1,4 +1,4 @@
-query getGroups($userId: UUID!) {
+query findGroups($userId: UUID!) {
   membersCollection(filter: { user_id: { eq: $userId } }) {
     edges {
       node {
@@ -22,8 +22,22 @@ query getGroups($userId: UUID!) {
   }
 }
 
-mutation addGroup($name: String!) {
-  insertIntogroupsCollection(objects: [{ name: $name }]) {
+mutation addGroup($name: String!, $owner: UUID!) {
+  insertIntogroupsCollection(objects: [{ name: $name, owner: $owner }]) {
+    records {
+      id
+    }
+  }
+}
+
+mutation removeGroup($groupId: Int!) {
+  deleteFrommembersCollection(filter: { group_id: { eq: $groupId } }) {
+    records {
+      group_id
+      user_id
+    }
+  }
+  deleteFromgroupsCollection(filter: { id: { eq: $groupId } }) {
     records {
       id
     }

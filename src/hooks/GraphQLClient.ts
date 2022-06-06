@@ -15,8 +15,7 @@ const useGraphQLClient = () => {
 
   const auth = useAuth();
   if (auth.isSignedIn) {
-    const { accessToken } = auth;
-    client.setHeader('Authorization', `Bearer ${accessToken}`);
+    client.setHeader('Authorization', `Bearer ${auth.accessToken}`);
   }
 
   return client;

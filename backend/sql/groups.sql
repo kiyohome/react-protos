@@ -11,7 +11,8 @@ drop table if exists groups;
 
 create table groups (
   id serial primary key,
-  name text unique not null
+  name text unique not null,
+  owner uuid references profiles not null
 );
 
 create table members (
@@ -27,7 +28,7 @@ alter table groups enable row level security;
 SELECT：ログインユーザーのみ
 INSERT：ログインユーザーのみ
 UPDATE：同じグループのメンバーのみ
-DELETE：同じグループのメンバーのみ
+DELETE：グループのオーナーのみ
 */
 
 create policy groups_select_authenticated
@@ -54,11 +55,7 @@ create policy groups_update_same_group_members
 create policy groups_delete_same_group_members
   on groups
   for delete
-  using (
-    auth.uid() in (
-      select user_id from members where group_id = id
-    )
-  );
+  using (auth.uid() = owner);
 
 alter table members enable row level security;
 
