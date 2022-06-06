@@ -12,7 +12,7 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useNavigate } from 'react-router-dom';
-import useSupabase from '../hooks/Supabase';
+import { useAuth } from '../hooks/Auth';
 
 const SignUpPage = () => {
   const form = useForm({
@@ -30,27 +30,14 @@ const SignUpPage = () => {
 
   const [state, setState] = useSetState({ loading: false, messaage: '' });
   const navigate = useNavigate();
-  const supabase = useSupabase();
 
-  const signUp = async (values: {
-    nickname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }): Promise<void> => {
+  const auth = useAuth();
+
+  const signUp = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const { error } = await supabase.auth.signUp(
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          data: {
-            nickname: values.nickname,
-          },
-        }
-      );
+
+      const error = await auth.signUp(values);
       if (error) {
         setState({ messaage: error.message });
       } else {

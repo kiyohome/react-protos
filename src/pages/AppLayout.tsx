@@ -19,34 +19,44 @@ import {
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryErrorResetBoundary } from 'react-query';
+import { ErrorBoundary } from 'react-error-boundary';
 import logo from '../logo.svg';
-import { useUser } from '../hooks/GlobalState';
-import useSupabase from '../hooks/Supabase';
+import { useAuth } from '../hooks/Auth';
+import { useUser } from '../hooks/User';
+import ErrorPage from './ErrorPage';
 
-const PageLayout = () => {
+const AppLayout = () => {
   const theme = useMantineTheme();
+
   const [state, setState] = useSetState({
     navbarOpened: false,
     menuOpened: false,
     loading: false,
   });
-  const [user] = useUser();
+
   const navigate = useNavigate();
   const links = [
     { label: 'Groups', path: '/groups' },
     { label: 'Events', path: '/events' },
   ];
-  const supabase = useSupabase();
+
+  const [user] = useUser();
+  const auth = useAuth();
+
   const signOut = async () => {
     try {
       setState({ loading: true });
-      await supabase.auth.signOut();
+      await auth.signOut();
       showNotification({ message: 'Successful sign out.' });
       window.location.href = '/';
     } finally {
       setState({ loading: false });
     }
   };
+
+  const { reset } = useQueryErrorResetBoundary();
+
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -110,18 +120,17 @@ const PageLayout = () => {
               onClose={() => setState({ menuOpened: false })}
               control={<Avatar radius="md" size="md" />}
             >
-              {user.isLoggedIn() ? (
-                <>
-                  <Menu.Label>Signed in as {user.name}</Menu.Label>
-                  <Divider />
-                  <Menu.Item onClick={signOut}>Sign out</Menu.Item>
-                </>
+              <Menu.Label>{user.name}</Menu.Label>
+              <Divider />
+              {auth.isSignedIn ? (
+                <Menu.Item onClick={signOut}>Sign out</Menu.Item>
               ) : (
                 <>
-                  <Menu.Label>Not signed in</Menu.Label>
-                  <Divider />
                   <Menu.Item onClick={() => navigate('/signin')}>
                     Sign in
+                  </Menu.Item>
+                  <Menu.Item onClick={() => navigate('/signup')}>
+                    Sign up
                   </Menu.Item>
                 </>
               )}
@@ -136,9 +145,11 @@ const PageLayout = () => {
       }
     >
       <LoadingOverlay visible={state.loading} />
-      <Outlet />
+      <ErrorBoundary onReset={reset} fallback={<ErrorPage />}>
+        <Outlet />
+      </ErrorBoundary>
     </AppShell>
   );
 };
 
-export default PageLayout;
+export default AppLayout;

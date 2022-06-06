@@ -41,8 +41,6 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
     'react/jsx-one-expression-per-line': 'off',
     'react/function-component-definition': [
       2,
@@ -65,6 +63,12 @@ module.exports = {
           arguments: false,
           attributes: false,
         },
+      },
+    ],
+    '@typescript-eslint/restrict-template-expressions': [
+      'error',
+      {
+        allowNumber: true,
       },
     ],
   },

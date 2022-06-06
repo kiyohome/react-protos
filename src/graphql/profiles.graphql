@@ -1,0 +1,11 @@
+query findProfiles($first: Int!, $likeName: String!) {
+  profilesCollection(first: $first, filter: { nickname: { like: $likeName } }) {
+    edges {
+      node {
+        id
+        nickname
+        avatar_url
+      }
+    }
+  }
+}

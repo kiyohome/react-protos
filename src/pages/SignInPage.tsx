@@ -12,8 +12,9 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useUser, User, NavigateState } from '../hooks/GlobalState';
-import useSupabase from '../hooks/Supabase';
+import { useAuth } from '../hooks/Auth';
+import { NavigateState } from '../hooks/NavigateState';
+import { User, useUser } from '../hooks/User';
 
 const SignInPage = () => {
   const form = useForm({
@@ -24,20 +25,20 @@ const SignInPage = () => {
   });
 
   const [state, setState] = useSetState({ loading: false, message: '' });
-  const [, setUser] = useUser();
   const navigate = useNavigate();
   const location = useLocation() as NavigateState;
-  const supabase = useSupabase();
+  const auth = useAuth();
 
-  const signIn = async (credentials: {
-    email: string;
-    password: string;
-  }): Promise<void> => {
+  const [, setUser] = useUser();
+
+  const signIn = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
-      const { user } = await supabase.auth.signIn(credentials);
-      if (user) {
-        setUser(new User(user.id, user.user_metadata.nickname as string));
+
+      const isSuccess = await auth.signIn(values);
+      if (isSuccess) {
+        const profile = await auth.profile();
+        setUser(new User(profile.id, profile.nickname, profile.avatar_url));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
         showNotification({ message: 'Successful sign in.' });

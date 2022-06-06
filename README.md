@@ -31,18 +31,91 @@
   - [React Query](https://react-query.tanstack.com/)
   - 参考にしたもの
     - [React Queryを状態管理ライブラリとして使い倒そう！/useQStateのススメ](https://qiita.com/uehaj/items/4e41e294181b3771e77a)
-- 認証
+- 認証と認可
   - [Supabase](https://supabase.com/docs/)
   - 参考にしたもの
     - [Login With Email](https://supabase.com/docs/guides/auth/auth-email)
-
-## これから含めるもの
-
+    - [Managing User Data](https://supabase.com/docs/guides/auth/managing-user-data)
+    - [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)
 - API
   - [GraphQL](https://graphql.org/)
   - 参考にしたもの
-    - [GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606)
-- モックライブラリ
+    - [GraphQL Code Generator + React Queryの紹介](https://tech.hicustomer.jp/posts/graphql-codegen-react-query/)
+    - [Guide: React and GraphQL](https://www.graphql-code-generator.com/docs/guides/react)
+    - [TypeScript React-Query](https://www.graphql-code-generator.com/plugins/typescript-react-query)
+
+## これから含めるもの
+
 - 非同期処理のハンドリング
+  - 参考にしたもの
+    - [React QueryのSuspese Modeを使ってみた!](https://re-engines.com/2022/04/11/react-query-suspense/)
+    - [React Query Error Handling](https://tkdodo.eu/blog/react-query-error-handling)
 - バリデーション
 - 多言語対応
+- モックライブラリ
+
+## 動かすまで
+
+- [Supabase](https://supabase.com/docs/)でプロジェクトを作ります。
+- src/.envファイルを作成して環境変数を設定します。
+  ```
+  VITE_SUPABASE_URL=プロジェクトのURL
+  VITE_SUPABASE_ENDPOINT=プロジェクトのGraphQLのURL
+  VITE_SUPABASE_ANON_KEY=プロジェクトのAPIキー（anonキー）
+  VITE_SUPABASE_PERSIST_SESSION=no
+  ```
+- Supabaseのダッシュボードからテーブルとテストデータを作成します。
+  - TODO: 作成手順
+- 次のコマンドでアプリを起動します。
+  ```
+  $ yarn
+  $ yarn dev
+  ```
+
+## ER図
+
+[Entity Relationship Diagrams](https://mermaid-js.github.io/mermaid/#/entityRelationshipDiagram?id=entity-relationship-diagrams)
+
+```mermaid
+erDiagram
+
+  users ||--|| profiles: ""
+  profiles ||--o{ members: ""
+  groups ||--o{ members: ""
+  groups ||--o{ events: ""
+  events ||--o{ event_schedules: ""
+
+  users {
+    id uuid PK
+    email varchar
+  }
+
+  profiles {
+    id uuid PK
+    nickname text
+    avator_url text
+  }
+
+  members {
+    group_id bigint PK
+    user_id uuid PK
+  }
+
+  groups {
+    id serial PK
+    name text
+  }
+
+  events {
+    id serial PK
+    name text
+    group_id bigint
+  }
+
+  event_schedules {
+    id serial PK
+    event_id bigint
+    start_date timestamptz
+    end_date timestamptz
+  }
+```

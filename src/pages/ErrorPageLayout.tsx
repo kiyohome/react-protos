@@ -47,21 +47,26 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const NotFoundPage = () => {
+type Props = {
+  label: string;
+  title: string;
+  description: string;
+};
+
+const ErrorPageLayout = ({ label, title, description }: Props) => {
   const navigate = useNavigate();
   const { classes } = useStyles();
   return (
     <Container className={classes.root}>
-      <div className={classes.label}>404</div>
-      <Title className={classes.title}>You have found a secret place.</Title>
+      <div className={classes.label}>{label}</div>
+      <Title className={classes.title}>{title}</Title>
       <Text
         color="dimmed"
         size="lg"
         align="center"
         className={classes.description}
       >
-        Unfortunately, this is only a 404 page. You may have mistyped the
-        address, or the page has been moved to another URL.
+        {description}
       </Text>
       <Group position="center">
         <Button variant="subtle" size="md" onClick={() => navigate('/')}>
@@ -72,4 +77,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default ErrorPageLayout;

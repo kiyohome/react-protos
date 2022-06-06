@@ -1,0 +1,27 @@
+overwrite: true
+schema:
+  - ${VITE_SUPABASE_ENDPOINT}:
+      headers:
+        apikey: ${VITE_SUPABASE_ANON_KEY}
+documents: 'src/**/*.graphql'
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-query'
+    config:
+      skipTypename: true
+      fetcher: 'graphql-request'
+      isReactHook: true
+      scalars:
+        BigInt: number
+        Cursor: number
+        Date: string
+        Datetime: string
+        JSON: string
+        Time: string
+        UUID: string
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
