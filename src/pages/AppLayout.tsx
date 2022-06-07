@@ -16,14 +16,15 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { useQueryErrorResetBoundary } from 'react-query';
 import { ErrorBoundary } from 'react-error-boundary';
-import logo from '../logo.svg';
+import { useQueryErrorResetBoundary } from 'react-query';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../hooks/Auth';
 import { useUser } from '../hooks/User';
+import logo from '../logo.svg';
 import ErrorPage from './ErrorPage';
 
 const AppLayout = () => {

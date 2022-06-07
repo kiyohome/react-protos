@@ -9,6 +9,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { useQueryClient } from 'react-query';
+
 import { useAddGroupMutation } from '../generated/graphql';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';

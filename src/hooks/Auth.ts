@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { useEnv } from './Env';
 
+import { useEnv } from './Env';
 import useGlobalState from './GlobalState';
 
 type Profile = {

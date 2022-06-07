@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
+
 import { useAuth } from './Auth';
 import { Env, useEnv } from './Env';
 import useGlobalState from './GlobalState';

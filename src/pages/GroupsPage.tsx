@@ -2,6 +2,7 @@ import { Anchor, Group, Table, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
+
 import { useFindGroupsQuery } from '../generated/graphql';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';

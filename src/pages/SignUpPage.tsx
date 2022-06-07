@@ -12,6 +12,7 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../hooks/Auth';
 
 const SignUpPage = () => {

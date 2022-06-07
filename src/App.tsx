@@ -1,9 +1,9 @@
-import React from 'react';
 import { MantineProvider } from '@mantine/core';
 import {
   NotificationsProvider,
   showNotification,
 } from '@mantine/notifications';
+import React from 'react';
 import {
   MutationCache,
   QueryCache,
@@ -11,6 +11,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+
 import RouterConfig from './RouterConfig';
 import './App.css';
 

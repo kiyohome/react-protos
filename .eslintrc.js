@@ -23,7 +23,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'import', 'unused-imports'],
   rules: {
     'import/extensions': [
       'error',
@@ -34,6 +34,39 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          ['parent', 'sibling'],
+          'object',
+          'type',
+          'index',
+        ],
+        'newlines-between': 'always',
+        pathGroupsExcludedImportTypes: ['builtin'],
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: true,
+        },
+        pathGroups: [
+          {
+            pattern: '@/components/common',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '@/components/hooks',
+            group: 'internal',
+            position: 'before',
+          },
+        ],
+      },
+    ],
+    'unused-imports/no-unused-imports': 'error',
     'react/jsx-filename-extension': [
       'error',
       {
