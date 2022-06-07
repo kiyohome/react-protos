@@ -40,17 +40,20 @@
     - [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)
 - API
   - [GraphQL](https://graphql.org/)
+  - [React Query](https://react-query.tanstack.com/)
+  - [GraphQL Code Generator](https://www.graphql-code-generator.com/)
   - 参考にしたもの
     - [GraphQL Code Generator + React Queryの紹介](https://tech.hicustomer.jp/posts/graphql-codegen-react-query/)
     - [Guide: React and GraphQL](https://www.graphql-code-generator.com/docs/guides/react)
     - [TypeScript React-Query](https://www.graphql-code-generator.com/plugins/typescript-react-query)
-
-## これから含めるもの
-
 - 非同期処理のハンドリング
+  - [Suspense](https://react-query.tanstack.com/guides/suspense)
   - 参考にしたもの
     - [React QueryのSuspese Modeを使ってみた!](https://re-engines.com/2022/04/11/react-query-suspense/)
     - [React Query Error Handling](https://tkdodo.eu/blog/react-query-error-handling)
+
+## これから含めるもの
+
 - バリデーション
 - 多言語対応
 - モックライブラリ
