@@ -42,7 +42,7 @@ const SignInPage = () => {
         setUser(new User(profile.id, profile.nickname, profile.avatar_url));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
-        showNotification({ message: 'Successful sign in.' });
+        showNotification({ message: 'Signed in.' });
       } else {
         setState({ message: 'Email or password is incorrect.' });
       }

@@ -60,14 +60,14 @@ const AppLayout = () => {
 
   return (
     <AppShell
-      navbarOffsetBreakpoint="sm"
+      navbarOffsetBreakpoint="md"
       fixed
       navbar={
         <Navbar
           p="md"
-          hiddenBreakpoint="sm"
+          hiddenBreakpoint="md"
           hidden={!state.navbarOpened}
-          width={{ sm: 150, lg: 150 }}
+          width={{ md: 200, lg: 300 }}
         >
           <Navbar.Section>
             {links.map((link) => (
@@ -90,7 +90,7 @@ const AppLayout = () => {
       header={
         <Header height={60} py="sm" px="md">
           <Group position="apart">
-            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+            <MediaQuery largerThan="md" styles={{ display: 'none' }}>
               <Burger
                 opened={state.navbarOpened}
                 onClick={() => setState({ navbarOpened: !state.navbarOpened })}

@@ -43,7 +43,7 @@ const SignUpPage = () => {
         setState({ messaage: error.message });
       } else {
         navigate('/signin', { replace: true });
-        showNotification({ message: 'Successful sign up.' });
+        showNotification({ message: 'Signed up.' });
       }
     } finally {
       setState({ loading: false });

@@ -8,6 +8,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { useQueryClient } from 'react-query';
 
 import { useAddGroupMutation } from '../generated/graphql';
@@ -41,6 +42,7 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
         { ...values, owner: user.id },
         {
           onSuccess: async () => {
+            showNotification({ message: 'Added a new group.' });
             await queryClient.invalidateQueries([
               'findGroups',
               { userId: user.id },
