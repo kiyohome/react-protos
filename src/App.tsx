@@ -17,7 +17,7 @@ import './App.css';
 
 const handleGlobalError = (error: unknown): void => {
   if (error instanceof Error) {
-    showNotification({ message: error.message, color: 'red' });
+    showNotification({ message: error.name, color: 'red' });
   }
 };
 

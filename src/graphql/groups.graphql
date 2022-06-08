@@ -5,6 +5,11 @@ query findGroups($userId: UUID!) {
         groups {
           id
           name
+          profiles {
+            id
+            nickname
+            avatar_url
+          }
           membersCollection {
             edges {
               node {

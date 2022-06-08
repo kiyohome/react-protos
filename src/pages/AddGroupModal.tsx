@@ -20,7 +20,7 @@ type Props = {
   onClose(): void;
 };
 
-const GroupAddModal = ({ opened, onClose }: Props) => {
+const AddGroupModal = ({ opened, onClose }: Props) => {
   const form = useForm({
     initialValues: {
       name: '',
@@ -34,7 +34,7 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   const queryClient = useQueryClient();
   const [user] = useUser();
 
-  const addGroup = async (values: typeof form.values) => {
+  const submit = async (values: typeof form.values) => {
     try {
       setState({ loading: true });
 
@@ -60,7 +60,7 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   return (
     <Modal opened={opened} onClose={onClose} title="Add a new group" centered>
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(addGroup)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.message}
         </Text>
@@ -81,4 +81,4 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   );
 };
 
-export default GroupAddModal;
+export default AddGroupModal;

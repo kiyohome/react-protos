@@ -32,7 +32,7 @@ const SignInPage = () => {
 
   const [, setUser] = useUser();
 
-  const signIn = async (values: typeof form.values): Promise<void> => {
+  const submit = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
 
@@ -56,7 +56,7 @@ const SignInPage = () => {
   return (
     <Modal opened onClose={close} title="Sign in" centered>
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(signIn)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.message}
         </Text>

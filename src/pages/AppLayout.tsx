@@ -79,7 +79,13 @@ const AppLayout = () => {
                 }}
                 component="div"
                 underline={false}
-                mb={6}
+                sx={{
+                  padding: theme.spacing.xs,
+                  borderRadius: theme.radius.sm,
+                  '&:hover': {
+                    backgroundColor: theme.colors.gray[0],
+                  },
+                }}
               >
                 {link.label}
               </Anchor>

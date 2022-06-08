@@ -704,6 +704,11 @@ export type FindGroupsQuery = {
         groups?: {
           id: number;
           name: string;
+          profiles?: {
+            id: string;
+            nickname: string;
+            avatar_url?: string | null;
+          } | null;
           membersCollection?: {
             edges: Array<{
               node?: {
@@ -788,6 +793,11 @@ export const FindGroupsDocument = `
         groups {
           id
           name
+          profiles {
+            id
+            nickname
+            avatar_url
+          }
           membersCollection {
             edges {
               node {

@@ -34,7 +34,7 @@ const SignUpPage = () => {
 
   const auth = useAuth();
 
-  const signUp = async (values: typeof form.values): Promise<void> => {
+  const submit = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
 
@@ -55,7 +55,7 @@ const SignUpPage = () => {
   return (
     <Modal opened onClose={close} title="Sing up" centered>
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(signUp)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.messaage}
         </Text>
