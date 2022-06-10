@@ -19,10 +19,10 @@ import { useUser } from '../hooks/User';
 type Props = {
   opened: boolean;
   onClose: () => void;
-  group: { id: number; name: string };
+  targetGroup: { id: number; name: string };
 };
 
-const RemoveGroupModal = ({ opened, onClose, group }: Props) => {
+const RemoveGroupModal = ({ opened, onClose, targetGroup }: Props) => {
   const form = useForm({
     initialValues: {
       name: '',
@@ -41,7 +41,7 @@ const RemoveGroupModal = ({ opened, onClose, group }: Props) => {
       setState({ loading: true });
 
       await mutation.mutateAsync(
-        { groupId: group.id },
+        { groupId: targetGroup.id },
         {
           onSuccess: async () => {
             showNotification({ message: 'Removed a group.' });
@@ -60,14 +60,14 @@ const RemoveGroupModal = ({ opened, onClose, group }: Props) => {
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Remove a group" centered>
+    <Modal opened={opened} onClose={onClose} title="Remove a group">
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.message}
         </Text>
-        <Highlight highlight={[group.name]}>
-          {`Are you sure you want to remove the group "${group.name}". If you want to delete the group, please enter the name of the group.`}
+        <Highlight highlight={[targetGroup.name]}>
+          {`Are you sure you want to remove the group "${targetGroup.name}". If you want to delete the group, please type the name of the group.`}
         </Highlight>
         <TextInput
           mt="md"
@@ -81,7 +81,7 @@ const RemoveGroupModal = ({ opened, onClose, group }: Props) => {
           <Button
             type="submit"
             size="sm"
-            disabled={group.name !== form.values.name}
+            disabled={targetGroup.name !== form.values.name}
           >
             Remove
           </Button>

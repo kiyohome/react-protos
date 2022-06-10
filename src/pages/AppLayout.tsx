@@ -83,9 +83,10 @@ const AppLayout = () => {
                   padding: theme.spacing.xs,
                   borderRadius: theme.radius.sm,
                   '&:hover': {
-                    backgroundColor: theme.colors.gray[0],
+                    backgroundColor: theme.colors.blue[0],
                   },
                 }}
+                weight="bold"
               >
                 {link.label}
               </Anchor>
@@ -152,7 +153,11 @@ const AppLayout = () => {
       }
     >
       <LoadingOverlay visible={state.loading} />
-      <ErrorBoundary onReset={reset} fallback={<ErrorPage />}>
+      <ErrorBoundary
+        onReset={reset}
+        fallback={<ErrorPage />}
+        onError={(error) => console.log(error)}
+      >
         <Outlet />
       </ErrorBoundary>
     </AppShell>

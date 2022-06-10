@@ -1,9 +1,11 @@
 drop trigger if exists on_group_created on groups;
 drop function if exists handle_new_group;
-drop policy if exists members_all_same_group_members on members;
+drop policy if exists members_delete_group_owner on members;
+drop policy if exists members_insert_group_owner on members;
+drop policy if exists members_select_same_group_members on members;
 drop function if exists is_same_group_members;
-drop policy if exists groups_delete_same_group_members on groups;
-drop policy if exists groups_update_same_group_members on groups;
+drop policy if exists groups_delete_group_owner on groups;
+drop policy if exists groups_update_group_owner on groups;
 drop policy if exists groups_insert_authenticated on groups;
 drop policy if exists groups_select_authenticated on groups;
 drop table if exists members;
@@ -27,7 +29,7 @@ alter table groups enable row level security;
 グループ
 SELECT：ログインユーザーのみ
 INSERT：ログインユーザーのみ
-UPDATE：同じグループのメンバーのみ
+UPDATE：グループのオーナーのみ
 DELETE：グループのオーナーのみ
 */
 
@@ -43,16 +45,12 @@ create policy groups_insert_authenticated
   to authenticated
   with check (true);
 
-create policy groups_update_same_group_members
+create policy groups_update_group_owner
   on groups
   for update
-  using (
-    auth.uid() in (
-      select user_id from members where group_id = id
-    )
-  );
+  using (auth.uid() = owner);
 
-create policy groups_delete_same_group_members
+create policy groups_delete_group_owner
   on groups
   for delete
   using (auth.uid() = owner);
@@ -62,9 +60,9 @@ alter table members enable row level security;
 /*
 メンバー
 SELECT：同じグループのメンバーのみ
-INSERT：同じグループのメンバーのみ
-UPDATE：同じグループのメンバーのみ
-DELETE：同じグループのメンバーのみ
+INSERT：グループのオーナーのみ
+UPDATE：許可なし
+DELETE：グループのオーナーのみ
 */
 
 create function is_same_group_members (_user_id uuid, _group_id bigint)
@@ -81,14 +79,25 @@ as $$
   );
 $$;
 
-create policy members_all_same_group_members
+create policy members_select_same_group_members
   on members
-  for all
+  for select
   using (
     is_same_group_members(auth.uid(), group_id)
-  )
+  );
+
+create policy members_insert_group_owner
+  on members
+  for insert
   with check (
-    is_same_group_members(auth.uid(), group_id)
+    group_id in (select g.id from groups g where g.owner = auth.uid())
+  );
+
+create policy members_delete_group_owner
+  on members
+  for delete
+  using (
+    group_id in (select g.id from groups g where g.owner = auth.uid())
   );
 
 create function handle_new_group ()

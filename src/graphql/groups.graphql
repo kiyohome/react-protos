@@ -29,23 +29,16 @@ query findGroups($userId: UUID!) {
 
 mutation addGroup($name: String!, $owner: UUID!) {
   insertIntogroupsCollection(objects: [{ name: $name, owner: $owner }]) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
 
 mutation removeGroup($groupId: Int!) {
   deleteFrommembersCollection(filter: { group_id: { eq: $groupId } }) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
   deleteFromgroupsCollection(filter: { id: { eq: $groupId } }) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
 
@@ -53,10 +46,7 @@ mutation addMember($grougId: Int!, $userId: UUID!) {
   insertIntomembersCollection(
     objects: { group_id: $grougId, user_id: $userId }
   ) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
 }
 
@@ -64,9 +54,6 @@ mutation removeMember($grougId: Int!, $userId: UUID!) {
   deleteFrommembersCollection(
     filter: { group_id: { eq: $grougId }, user_id: { eq: $userId } }
   ) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
 }

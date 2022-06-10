@@ -732,7 +732,7 @@ export type AddGroupMutationVariables = Exact<{
 }>;
 
 export type AddGroupMutation = {
-  insertIntogroupsCollection?: { records: Array<{ id: number }> } | null;
+  insertIntogroupsCollection?: { affectedCount: number } | null;
 };
 
 export type RemoveGroupMutationVariables = Exact<{
@@ -740,10 +740,8 @@ export type RemoveGroupMutationVariables = Exact<{
 }>;
 
 export type RemoveGroupMutation = {
-  deleteFrommembersCollection: {
-    records: Array<{ group_id: number; user_id: string }>;
-  };
-  deleteFromgroupsCollection: { records: Array<{ id: number }> };
+  deleteFrommembersCollection: { affectedCount: number };
+  deleteFromgroupsCollection: { affectedCount: number };
 };
 
 export type AddMemberMutationVariables = Exact<{
@@ -752,9 +750,7 @@ export type AddMemberMutationVariables = Exact<{
 }>;
 
 export type AddMemberMutation = {
-  insertIntomembersCollection?: {
-    records: Array<{ group_id: number; user_id: string }>;
-  } | null;
+  insertIntomembersCollection?: { affectedCount: number } | null;
 };
 
 export type RemoveMemberMutationVariables = Exact<{
@@ -763,9 +759,7 @@ export type RemoveMemberMutationVariables = Exact<{
 }>;
 
 export type RemoveMemberMutation = {
-  deleteFrommembersCollection: {
-    records: Array<{ group_id: number; user_id: string }>;
-  };
+  deleteFrommembersCollection: { affectedCount: number };
 };
 
 export type FindProfilesQueryVariables = Exact<{
@@ -834,9 +828,7 @@ export const useFindGroupsQuery = <TData = FindGroupsQuery, TError = unknown>(
 export const AddGroupDocument = `
     mutation addGroup($name: String!, $owner: UUID!) {
   insertIntogroupsCollection(objects: [{name: $name, owner: $owner}]) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
     `;
@@ -864,15 +856,10 @@ export const useAddGroupMutation = <TError = unknown, TContext = unknown>(
 export const RemoveGroupDocument = `
     mutation removeGroup($groupId: Int!) {
   deleteFrommembersCollection(filter: {group_id: {eq: $groupId}}) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
   deleteFromgroupsCollection(filter: {id: {eq: $groupId}}) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
     `;
@@ -905,10 +892,7 @@ export const useRemoveGroupMutation = <TError = unknown, TContext = unknown>(
 export const AddMemberDocument = `
     mutation addMember($grougId: Int!, $userId: UUID!) {
   insertIntomembersCollection(objects: {group_id: $grougId, user_id: $userId}) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
 }
     `;
@@ -938,10 +922,7 @@ export const RemoveMemberDocument = `
   deleteFrommembersCollection(
     filter: {group_id: {eq: $grougId}, user_id: {eq: $userId}}
   ) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
   }
 }
     `;

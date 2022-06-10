@@ -30,7 +30,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
   const [state, setState] = useSetState({ message: '', loading: false });
 
   const graphQLClient = useGraphQLClient();
-  const mutation = useAddGroupMutation(graphQLClient);
+  const addGroupMutation = useAddGroupMutation(graphQLClient);
   const queryClient = useQueryClient();
   const [user] = useUser();
 
@@ -38,7 +38,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
     try {
       setState({ loading: true });
 
-      await mutation.mutateAsync(
+      await addGroupMutation.mutateAsync(
         { ...values, owner: user.id },
         {
           onSuccess: async () => {
@@ -58,7 +58,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Add a new group" centered>
+    <Modal opened={opened} onClose={onClose} title="Add a new group">
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">

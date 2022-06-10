@@ -16,37 +16,64 @@ import useGraphQLClient from '../hooks/GraphQLClient';
 import useIsMobile from '../hooks/Mobile';
 import { useUser } from '../hooks/User';
 import AddGroupModal from './AddGroupModal';
+import ChangeMembersModal from './ChangeMembersModal';
 import Loading from './Loading';
 import RemoveGroupModal from './RemoveGroupModal';
 
 type GroupsProps = {
   setGroup: (id: number, name: string) => void;
+  setMembers: (members: { id: string; nickname: string }[]) => void;
+  openChangeMembers: () => void;
   openRemove: () => void;
 };
 
-const Groups = ({ setGroup, openRemove }: GroupsProps) => {
+const Groups = ({
+  setGroup,
+  setMembers,
+  openChangeMembers,
+  openRemove,
+}: GroupsProps) => {
   const isMobile = useIsMobile();
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
 
-  const { data } = useFindGroupsQuery(graphQLClient, { userId: user.id });
+  const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
+    userId: user.id,
+  });
 
-  const rows = data?.membersCollection?.edges.map((memberEdge) => {
+  const rows = findGroupsQuery?.membersCollection?.edges.map((memberEdge) => {
     const group = memberEdge.node?.groups;
 
     const groupName = <Text>{group?.name}</Text>;
 
     const isOwner = user.id === group?.profiles?.id;
 
+    const memberValues =
+      group?.membersCollection?.edges.map((m) => {
+        const profile = m.node?.profiles;
+        return { id: profile?.id ?? '', nickname: profile?.nickname ?? '' };
+      }) ?? [];
+
     const menu = (
       <Menu>
-        <MenuItem>Change members</MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (group) {
+              setGroup(group.id, group.name);
+              setMembers(memberValues);
+              openChangeMembers();
+            }
+          }}
+        >
+          Change members
+        </MenuItem>
         <MenuItem>Edit group</MenuItem>
         <MenuItem
-          disabled={!isOwner}
           onClick={() => {
-            setGroup(group?.id, group?.name);
-            openRemove();
+            if (group) {
+              setGroup(group.id, group.name);
+              openRemove();
+            }
           }}
         >
           Remove group
@@ -55,7 +82,12 @@ const Groups = ({ setGroup, openRemove }: GroupsProps) => {
     );
 
     const owner = (
-      <Badge size="lg" radius="sm" style={{ textTransform: 'none' }}>
+      <Badge
+        size="lg"
+        radius="sm"
+        style={{ textTransform: 'none' }}
+        color="gray"
+      >
         {group?.profiles?.nickname}
       </Badge>
     );
@@ -68,6 +100,7 @@ const Groups = ({ setGroup, openRemove }: GroupsProps) => {
           size="lg"
           radius="sm"
           style={{ textTransform: 'none' }}
+          color="gray"
         >
           {profile?.nickname}
         </Badge>
@@ -82,14 +115,14 @@ const Groups = ({ setGroup, openRemove }: GroupsProps) => {
               {groupName}
               {menu}
             </Group>
-            <Text color="dimmed">Members</Text>
-            <Group mt="md" spacing="sm">
-              {members}
-            </Group>
-            <Text color="dimmed">Owner</Text>
-            <Group mt="md" spacing="sm">
-              {owner}
-            </Group>
+            <Text mt="md" size="xs" color="dimmed">
+              Members
+            </Text>
+            <Group spacing="sm">{members}</Group>
+            <Text mt="md" size="xs" color="dimmed">
+              Owner
+            </Text>
+            <Group>{owner}</Group>
           </td>
         ) : (
           <>
@@ -119,7 +152,6 @@ const Groups = ({ setGroup, openRemove }: GroupsProps) => {
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>{rows}</tbody>
         </>
       )}
@@ -128,23 +160,40 @@ const Groups = ({ setGroup, openRemove }: GroupsProps) => {
 };
 
 type GroupsState = {
-  addOpened: boolean;
-  removeOpened: boolean;
+  addGroupOpened: boolean;
+  changeMembersOpened: boolean;
+  removeGroupOpened: boolean;
   group: { id: number; name: string };
+  members: { id: string; nickname: string }[];
 };
 
 const GroupsPage = () => {
   const [state, setState] = useSetState<GroupsState>({
-    addOpened: false,
-    removeOpened: false,
+    addGroupOpened: false,
+    changeMembersOpened: false,
+    removeGroupOpened: false,
     group: { id: -1, name: '' },
+    members: [],
   });
+
+  const clearState = () => {
+    setState({
+      addGroupOpened: false,
+      changeMembersOpened: false,
+      removeGroupOpened: false,
+      group: { id: -1, name: '' },
+      members: [],
+    });
+  };
 
   return (
     <>
       <Group position="apart">
         <Title order={3}>Gropus</Title>
-        <Button variant="light" onClick={() => setState({ addOpened: true })}>
+        <Button
+          variant="light"
+          onClick={() => setState({ addGroupOpened: true })}
+        >
           New Group
         </Button>
       </Group>
@@ -154,18 +203,23 @@ const GroupsPage = () => {
             setGroup={(id: number, name: string) => {
               setState({ group: { id, name } });
             }}
-            openRemove={() => setState({ removeOpened: true })}
+            setMembers={(members) => setState({ members })}
+            openChangeMembers={() => setState({ changeMembersOpened: true })}
+            openRemove={() => setState({ removeGroupOpened: true })}
           />
         </Group>
       </Suspense>
-      <AddGroupModal
-        opened={state.addOpened}
-        onClose={() => setState({ addOpened: false })}
+      <AddGroupModal opened={state.addGroupOpened} onClose={clearState} />
+      <ChangeMembersModal
+        opened={state.changeMembersOpened}
+        onClose={clearState}
+        targetGroup={state.group}
+        initialMembers={state.members}
       />
       <RemoveGroupModal
-        opened={state.removeOpened}
-        onClose={() => setState({ removeOpened: false })}
-        group={state.group}
+        opened={state.removeGroupOpened}
+        onClose={clearState}
+        targetGroup={state.group}
       />
     </>
   );
