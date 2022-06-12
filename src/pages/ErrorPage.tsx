@@ -2,10 +2,9 @@ import ErrorPageLayout from './ErrorPageLayout';
 
 const ErrorPage = () => (
   <ErrorPageLayout
-    label="500"
-    title="Sorry, something wrong has happened."
-    description="Please contact us if it happens repeatedly.
-    TODO: Contact us"
+    label="Oops"
+    title="There was an error."
+    description="Sorry, please contact us if the error continues. Sometimes errors occur when the network is disconnected."
   />
 );
 

@@ -1,13 +1,14 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import AccessControl from './pages/AccessControl';
 import AppLayout from './pages/AppLayout';
+import EventsPage from './pages/EventsPage';
+import GroupPage from './pages/GroupPage';
+import GroupsPage from './pages/GroupsPage';
 import PageNotFoundPage from './pages/PageNotFoundPage';
-import WelcomePage from './pages/WelcomePage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
-import AccessControl from './pages/AccessControl';
-import GroupsPage from './pages/GroupsPage';
-import GroupPage from './pages/GroupPage';
-import EventsPage from './pages/EventsPage';
+import WelcomePage from './pages/WelcomePage';
 
 const RouterConfig = () => (
   <BrowserRouter>

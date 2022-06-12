@@ -704,6 +704,11 @@ export type FindGroupsQuery = {
         groups?: {
           id: number;
           name: string;
+          profiles?: {
+            id: string;
+            nickname: string;
+            avatar_url?: string | null;
+          } | null;
           membersCollection?: {
             edges: Array<{
               node?: {
@@ -727,40 +732,41 @@ export type AddGroupMutationVariables = Exact<{
 }>;
 
 export type AddGroupMutation = {
-  insertIntogroupsCollection?: { records: Array<{ id: number }> } | null;
+  insertIntogroupsCollection?: { affectedCount: number } | null;
 };
 
 export type RemoveGroupMutationVariables = Exact<{
   groupId: Scalars['Int'];
+  owner: Scalars['UUID'];
+  atMost: Scalars['Int'];
 }>;
 
 export type RemoveGroupMutation = {
-  deleteFrommembersCollection: {
-    records: Array<{ group_id: number; user_id: string }>;
-  };
-  deleteFromgroupsCollection: { records: Array<{ id: number }> };
+  deleteMembers: { affectedCount: number };
+  deleteOwner: { affectedCount: number };
+  deleteFromgroupsCollection: { affectedCount: number };
 };
 
-export type AddMemberMutationVariables = Exact<{
-  grougId: Scalars['Int'];
-  userId: Scalars['UUID'];
+export type ChangeMembersMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+  owner: Scalars['UUID'];
+  members: Array<MembersInsertInput> | MembersInsertInput;
+  atMost: Scalars['Int'];
 }>;
 
-export type AddMemberMutation = {
-  insertIntomembersCollection?: {
-    records: Array<{ group_id: number; user_id: string }>;
-  } | null;
+export type ChangeMembersMutation = {
+  deleteFrommembersCollection: { affectedCount: number };
+  insertIntomembersCollection?: { affectedCount: number } | null;
 };
 
-export type RemoveMemberMutationVariables = Exact<{
-  grougId: Scalars['Int'];
-  userId: Scalars['UUID'];
+export type ChangeMembersToOwnerOnlyMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+  owner: Scalars['UUID'];
+  atMost: Scalars['Int'];
 }>;
 
-export type RemoveMemberMutation = {
-  deleteFrommembersCollection: {
-    records: Array<{ group_id: number; user_id: string }>;
-  };
+export type ChangeMembersToOwnerOnlyMutation = {
+  deleteFrommembersCollection: { affectedCount: number };
 };
 
 export type FindProfilesQueryVariables = Exact<{
@@ -788,6 +794,11 @@ export const FindGroupsDocument = `
         groups {
           id
           name
+          profiles {
+            id
+            nickname
+            avatar_url
+          }
           membersCollection {
             edges {
               node {
@@ -824,9 +835,7 @@ export const useFindGroupsQuery = <TData = FindGroupsQuery, TError = unknown>(
 export const AddGroupDocument = `
     mutation addGroup($name: String!, $owner: UUID!) {
   insertIntogroupsCollection(objects: [{name: $name, owner: $owner}]) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
     `;
@@ -852,17 +861,18 @@ export const useAddGroupMutation = <TError = unknown, TContext = unknown>(
     options
   );
 export const RemoveGroupDocument = `
-    mutation removeGroup($groupId: Int!) {
-  deleteFrommembersCollection(filter: {group_id: {eq: $groupId}}) {
-    records {
-      group_id
-      user_id
-    }
+    mutation removeGroup($groupId: Int!, $owner: UUID!, $atMost: Int!) {
+  deleteMembers: deleteFrommembersCollection(
+    filter: {group_id: {eq: $groupId}, user_id: {neq: $owner}}
+    atMost: $atMost
+  ) {
+    affectedCount
+  }
+  deleteOwner: deleteFrommembersCollection(filter: {group_id: {eq: $groupId}}) {
+    affectedCount
   }
   deleteFromgroupsCollection(filter: {id: {eq: $groupId}}) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
     `;
@@ -892,73 +902,80 @@ export const useRemoveGroupMutation = <TError = unknown, TContext = unknown>(
       )(),
     options
   );
-export const AddMemberDocument = `
-    mutation addMember($grougId: Int!, $userId: UUID!) {
-  insertIntomembersCollection(objects: {group_id: $grougId, user_id: $userId}) {
-    records {
-      group_id
-      user_id
-    }
-  }
-}
-    `;
-export const useAddMemberMutation = <TError = unknown, TContext = unknown>(
-  client: GraphQLClient,
-  options?: UseMutationOptions<
-    AddMemberMutation,
-    TError,
-    AddMemberMutationVariables,
-    TContext
-  >,
-  headers?: RequestInit['headers']
-) =>
-  useMutation<AddMemberMutation, TError, AddMemberMutationVariables, TContext>(
-    ['addMember'],
-    (variables?: AddMemberMutationVariables) =>
-      fetcher<AddMemberMutation, AddMemberMutationVariables>(
-        client,
-        AddMemberDocument,
-        variables,
-        headers
-      )(),
-    options
-  );
-export const RemoveMemberDocument = `
-    mutation removeMember($grougId: Int!, $userId: UUID!) {
+export const ChangeMembersDocument = `
+    mutation changeMembers($groupId: Int!, $owner: UUID!, $members: [membersInsertInput!]!, $atMost: Int!) {
   deleteFrommembersCollection(
-    filter: {group_id: {eq: $grougId}, user_id: {eq: $userId}}
+    filter: {group_id: {eq: $groupId}, user_id: {neq: $owner}}
+    atMost: $atMost
   ) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
+  }
+  insertIntomembersCollection(objects: $members) {
+    affectedCount
   }
 }
     `;
-export const useRemoveMemberMutation = <TError = unknown, TContext = unknown>(
+export const useChangeMembersMutation = <TError = unknown, TContext = unknown>(
   client: GraphQLClient,
   options?: UseMutationOptions<
-    RemoveMemberMutation,
+    ChangeMembersMutation,
     TError,
-    RemoveMemberMutationVariables,
+    ChangeMembersMutationVariables,
     TContext
   >,
   headers?: RequestInit['headers']
 ) =>
   useMutation<
-    RemoveMemberMutation,
+    ChangeMembersMutation,
     TError,
-    RemoveMemberMutationVariables,
+    ChangeMembersMutationVariables,
     TContext
   >(
-    ['removeMember'],
-    (variables?: RemoveMemberMutationVariables) =>
-      fetcher<RemoveMemberMutation, RemoveMemberMutationVariables>(
+    ['changeMembers'],
+    (variables?: ChangeMembersMutationVariables) =>
+      fetcher<ChangeMembersMutation, ChangeMembersMutationVariables>(
         client,
-        RemoveMemberDocument,
+        ChangeMembersDocument,
         variables,
         headers
       )(),
+    options
+  );
+export const ChangeMembersToOwnerOnlyDocument = `
+    mutation changeMembersToOwnerOnly($groupId: Int!, $owner: UUID!, $atMost: Int!) {
+  deleteFrommembersCollection(
+    filter: {group_id: {eq: $groupId}, user_id: {neq: $owner}}
+    atMost: $atMost
+  ) {
+    affectedCount
+  }
+}
+    `;
+export const useChangeMembersToOwnerOnlyMutation = <
+  TError = unknown,
+  TContext = unknown
+>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    ChangeMembersToOwnerOnlyMutation,
+    TError,
+    ChangeMembersToOwnerOnlyMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    ChangeMembersToOwnerOnlyMutation,
+    TError,
+    ChangeMembersToOwnerOnlyMutationVariables,
+    TContext
+  >(
+    ['changeMembersToOwnerOnly'],
+    (variables?: ChangeMembersToOwnerOnlyMutationVariables) =>
+      fetcher<
+        ChangeMembersToOwnerOnlyMutation,
+        ChangeMembersToOwnerOnlyMutationVariables
+      >(client, ChangeMembersToOwnerOnlyDocument, variables, headers)(),
     options
   );
 export const FindProfilesDocument = `

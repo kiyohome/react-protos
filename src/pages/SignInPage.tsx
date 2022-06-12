@@ -12,11 +12,15 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../hooks/Auth';
+import { useConfig } from '../hooks/Config';
 import { NavigateState } from '../hooks/NavigateState';
 import { User, useUser } from '../hooks/User';
 
 const SignInPage = () => {
+  const config = useConfig();
+
   const form = useForm({
     initialValues: {
       email: '',
@@ -31,7 +35,7 @@ const SignInPage = () => {
 
   const [, setUser] = useUser();
 
-  const signIn = async (values: typeof form.values): Promise<void> => {
+  const submit = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
 
@@ -41,7 +45,7 @@ const SignInPage = () => {
         setUser(new User(profile.id, profile.nickname, profile.avatar_url));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
-        showNotification({ message: 'Successful sign in.' });
+        showNotification({ message: 'Signed in.' });
       } else {
         setState({ message: 'Email or password is incorrect.' });
       }
@@ -53,9 +57,14 @@ const SignInPage = () => {
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Sign in" centered>
+    <Modal
+      opened
+      onClose={close}
+      title="Sign in"
+      centered={config.modalCentered}
+    >
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(signIn)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.message}
         </Text>

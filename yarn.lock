@@ -2598,6 +2598,18 @@ eslint-plugin-react@^7.30.0:
     semver "^6.3.0"
     string.prototype.matchall "^4.0.7"
 
+eslint-plugin-unused-imports@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-unused-imports/-/eslint-plugin-unused-imports-2.0.0.tgz#d8db8c4d0cfa0637a8b51ce3fd7d1b6bc3f08520"
+  integrity sha512-3APeS/tQlTrFa167ThtP0Zm0vctjr4M44HMpeg1P4bK6wItarumq0Ma82xorMKdFsWpphQBlRPzw/pxiVELX1A==
+  dependencies:
+    eslint-rule-composer "^0.3.0"
+
+eslint-rule-composer@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
+  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
+
 eslint-scope@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.1.tgz#e786e59a66cb92b3f6c1fb0d508aab174848f48c"
@@ -4961,6 +4973,11 @@ sync-fetch@0.3.1, sync-fetch@^0.3.1:
   dependencies:
     buffer "^5.7.0"
     node-fetch "^2.6.1"
+
+tabler-icons-react@^1.48.1:
+  version "1.48.1"
+  resolved "https://registry.yarnpkg.com/tabler-icons-react/-/tabler-icons-react-1.48.1.tgz#edf4718e7b444a79e33c261f735c639011b2b4eb"
+  integrity sha512-TX12VEymcICeHOUd0f086JgMZhwogol36aTbEZBe4KnvHIjr7TyHFUUKkqydgPwjdJPEA+6Y1XOglJ9IGKVC5Q==
 
 text-table@^0.2.0:
   version "0.2.0"

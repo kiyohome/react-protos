@@ -1,6 +1,7 @@
 import { Anchor, Breadcrumbs, Group, Text, Title } from '@mantine/core';
 import { Suspense } from 'react';
 import { Link, useParams } from 'react-router-dom';
+
 import { useFindGroupsQuery } from '../generated/graphql';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';

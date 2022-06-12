@@ -5,6 +5,11 @@ query findGroups($userId: UUID!) {
         groups {
           id
           name
+          profiles {
+            id
+            nickname
+            avatar_url
+          }
           membersCollection {
             edges {
               node {
@@ -24,44 +29,53 @@ query findGroups($userId: UUID!) {
 
 mutation addGroup($name: String!, $owner: UUID!) {
   insertIntogroupsCollection(objects: [{ name: $name, owner: $owner }]) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
 
-mutation removeGroup($groupId: Int!) {
-  deleteFrommembersCollection(filter: { group_id: { eq: $groupId } }) {
-    records {
-      group_id
-      user_id
-    }
+mutation removeGroup($groupId: Int!, $owner: UUID!, $atMost: Int!) {
+  deleteMembers: deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
+  ) {
+    affectedCount
+  }
+  deleteOwner: deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId } }
+  ) {
+    affectedCount
   }
   deleteFromgroupsCollection(filter: { id: { eq: $groupId } }) {
-    records {
-      id
-    }
+    affectedCount
   }
 }
 
-mutation addMember($grougId: Int!, $userId: UUID!) {
-  insertIntomembersCollection(
-    objects: { group_id: $grougId, user_id: $userId }
-  ) {
-    records {
-      group_id
-      user_id
-    }
-  }
-}
-
-mutation removeMember($grougId: Int!, $userId: UUID!) {
+mutation changeMembers(
+  $groupId: Int!
+  $owner: UUID!
+  $members: [membersInsertInput!]!
+  $atMost: Int!
+) {
   deleteFrommembersCollection(
-    filter: { group_id: { eq: $grougId }, user_id: { eq: $userId } }
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
   ) {
-    records {
-      group_id
-      user_id
-    }
+    affectedCount
+  }
+  insertIntomembersCollection(objects: $members) {
+    affectedCount
+  }
+}
+
+mutation changeMembersToOwnerOnly(
+  $groupId: Int!
+  $owner: UUID!
+  $atMost: Int!
+) {
+  deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
+  ) {
+    affectedCount
   }
 }

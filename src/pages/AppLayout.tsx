@@ -16,14 +16,15 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
-import { useQueryErrorResetBoundary } from 'react-query';
 import { ErrorBoundary } from 'react-error-boundary';
-import logo from '../logo.svg';
+import { useQueryErrorResetBoundary } from 'react-query';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../hooks/Auth';
 import { useUser } from '../hooks/User';
+import logo from '../logo.svg';
 import ErrorPage from './ErrorPage';
 
 const AppLayout = () => {
@@ -59,14 +60,14 @@ const AppLayout = () => {
 
   return (
     <AppShell
-      navbarOffsetBreakpoint="sm"
+      navbarOffsetBreakpoint="md"
       fixed
       navbar={
         <Navbar
           p="md"
-          hiddenBreakpoint="sm"
+          hiddenBreakpoint="md"
           hidden={!state.navbarOpened}
-          width={{ sm: 150, lg: 150 }}
+          width={{ md: 200, lg: 300 }}
         >
           <Navbar.Section>
             {links.map((link) => (
@@ -78,7 +79,14 @@ const AppLayout = () => {
                 }}
                 component="div"
                 underline={false}
-                mb={6}
+                sx={{
+                  padding: theme.spacing.xs,
+                  borderRadius: theme.radius.sm,
+                  '&:hover': {
+                    backgroundColor: theme.colors.blue[0],
+                  },
+                }}
+                weight="bold"
               >
                 {link.label}
               </Anchor>
@@ -89,7 +97,7 @@ const AppLayout = () => {
       header={
         <Header height={60} py="sm" px="md">
           <Group position="apart">
-            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+            <MediaQuery largerThan="md" styles={{ display: 'none' }}>
               <Burger
                 opened={state.navbarOpened}
                 onClick={() => setState({ navbarOpened: !state.navbarOpened })}
@@ -145,7 +153,13 @@ const AppLayout = () => {
       }
     >
       <LoadingOverlay visible={state.loading} />
-      <ErrorBoundary onReset={reset} fallback={<ErrorPage />}>
+      <ErrorBoundary
+        onReset={reset}
+        fallback={<ErrorPage />}
+        // FIXME: ログ収集に送信するように変更したいです。
+        // eslint-disable-next-line no-console
+        onError={(error) => console.log(error)}
+      >
         <Outlet />
       </ErrorBoundary>
     </AppShell>

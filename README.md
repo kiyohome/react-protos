@@ -16,6 +16,7 @@
   - 参考にしたもの
     - [Vite + React の環境構築](https://zenn.dev/kk6/scraps/36fa4579df6acb)
     - [prettier,eslintを導入する際にハマったこと2021新年](https://zenn.dev/ryusou/articles/nodejs-prettier-eslint2021)
+    - [ESLintでimportの整列・追加・削除を自動化する](https://qiita.com/yukiji/items/5ba9e065ac6ed57d05a4)
 - UIライブラリ
   - [Mantine](https://mantine.dev/)
   - 参考にしたもの
@@ -39,17 +40,20 @@
     - [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)
 - API
   - [GraphQL](https://graphql.org/)
+  - [React Query](https://react-query.tanstack.com/)
+  - [GraphQL Code Generator](https://www.graphql-code-generator.com/)
   - 参考にしたもの
     - [GraphQL Code Generator + React Queryの紹介](https://tech.hicustomer.jp/posts/graphql-codegen-react-query/)
     - [Guide: React and GraphQL](https://www.graphql-code-generator.com/docs/guides/react)
     - [TypeScript React-Query](https://www.graphql-code-generator.com/plugins/typescript-react-query)
-
-## これから含めるもの
-
 - 非同期処理のハンドリング
+  - [Suspense](https://react-query.tanstack.com/guides/suspense)
   - 参考にしたもの
     - [React QueryのSuspese Modeを使ってみた!](https://re-engines.com/2022/04/11/react-query-suspense/)
     - [React Query Error Handling](https://tkdodo.eu/blog/react-query-error-handling)
+
+## これから含めるもの
+
 - バリデーション
 - 多言語対応
 - モックライブラリ
@@ -64,8 +68,9 @@
   VITE_SUPABASE_ANON_KEY=プロジェクトのAPIキー（anonキー）
   VITE_SUPABASE_PERSIST_SESSION=no
   ```
-- Supabaseのダッシュボードからテーブルとテストデータを作成します。
-  - TODO: 作成手順
+- SupabaseのダッシュボードからSQLを実行してテーブルやポリシー等を作成します。
+  - [SQLでlikeを使えるようにSupabaseをカスタマイズ](./backend/sql/like_operation.sql)
+  - [アプリのDDL](./backend/sql/all.sql)
 - 次のコマンドでアプリを起動します。
   ```
   $ yarn

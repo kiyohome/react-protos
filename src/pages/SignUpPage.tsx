@@ -12,9 +12,13 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../hooks/Auth';
+import { useConfig } from '../hooks/Config';
 
 const SignUpPage = () => {
+  const config = useConfig();
+
   const form = useForm({
     initialValues: {
       nickname: '',
@@ -33,7 +37,7 @@ const SignUpPage = () => {
 
   const auth = useAuth();
 
-  const signUp = async (values: typeof form.values): Promise<void> => {
+  const submit = async (values: typeof form.values): Promise<void> => {
     try {
       setState({ loading: true });
 
@@ -42,7 +46,7 @@ const SignUpPage = () => {
         setState({ messaage: error.message });
       } else {
         navigate('/signin', { replace: true });
-        showNotification({ message: 'Successful sign up.' });
+        showNotification({ message: 'Signed up.' });
       }
     } finally {
       setState({ loading: false });
@@ -52,9 +56,14 @@ const SignUpPage = () => {
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Sing up" centered>
+    <Modal
+      opened
+      onClose={close}
+      title="Sing up"
+      centered={config.modalCentered}
+    >
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(signUp)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.messaage}
         </Text>

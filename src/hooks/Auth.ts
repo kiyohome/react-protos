@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { useEnv } from './Env';
 
+import { useConfig } from './Config';
 import useGlobalState from './GlobalState';
 
 type Profile = {
@@ -78,10 +78,10 @@ class Auth {
 }
 
 const useAuth = () => {
-  const env = useEnv();
+  const config = useConfig();
   const [auth] = useGlobalState(
     'auth',
-    new Auth(env.url, env.anonKey, env.persistSession)
+    new Auth(config.url, config.anonKey, config.persistSession)
   );
   return auth;
 };

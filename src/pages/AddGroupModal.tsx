@@ -8,8 +8,11 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
 import { useQueryClient } from 'react-query';
+
 import { useAddGroupMutation } from '../generated/graphql';
+import { useConfig } from '../hooks/Config';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';
 
@@ -18,7 +21,9 @@ type Props = {
   onClose(): void;
 };
 
-const GroupAddModal = ({ opened, onClose }: Props) => {
+const AddGroupModal = ({ opened, onClose }: Props) => {
+  const config = useConfig();
+
   const form = useForm({
     initialValues: {
       name: '',
@@ -28,18 +33,19 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   const [state, setState] = useSetState({ message: '', loading: false });
 
   const graphQLClient = useGraphQLClient();
-  const mutation = useAddGroupMutation(graphQLClient);
+  const addGroupMutation = useAddGroupMutation(graphQLClient);
   const queryClient = useQueryClient();
   const [user] = useUser();
 
-  const addGroup = async (values: typeof form.values) => {
+  const submit = async (values: typeof form.values) => {
     try {
       setState({ loading: true });
 
-      await mutation.mutateAsync(
+      await addGroupMutation.mutateAsync(
         { ...values, owner: user.id },
         {
           onSuccess: async () => {
+            showNotification({ message: 'Added a new group.' });
             await queryClient.invalidateQueries([
               'findGroups',
               { userId: user.id },
@@ -55,9 +61,14 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Add a new group" centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title="Add a new group"
+      centered={config.modalCentered}
+    >
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(addGroup)}>
+      <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
           {state.message}
         </Text>
@@ -78,4 +89,4 @@ const GroupAddModal = ({ opened, onClose }: Props) => {
   );
 };
 
-export default GroupAddModal;
+export default AddGroupModal;
