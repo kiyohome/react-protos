@@ -48,16 +48,18 @@ const Groups = ({ openChangeMembers, openRemove }: GroupsProps) => {
               openChangeMembers(group.id);
             }
           }}
+          disabled={!isOwner}
         >
           Change members
         </MenuItem>
-        <MenuItem>Edit group</MenuItem>
+        <MenuItem disabled={!isOwner}>Edit group</MenuItem>
         <MenuItem
           onClick={() => {
             if (group) {
               openRemove(group.id);
             }
           }}
+          disabled={!isOwner}
         >
           Remove group
         </MenuItem>
