@@ -65,7 +65,7 @@ UPDATE：許可なし
 DELETE：グループのオーナーのみ
 */
 
-create function is_same_group_members (_user_id uuid, _group_id bigint)
+create function is_same_group_members (_user_id uuid, _group_id integer)
 returns bool
 language sql
 security definer

@@ -33,8 +33,16 @@ mutation addGroup($name: String!, $owner: UUID!) {
   }
 }
 
-mutation removeGroup($groupId: Int!) {
-  deleteFrommembersCollection(filter: { group_id: { eq: $groupId } }) {
+mutation removeGroup($groupId: Int!, $owner: UUID!, $atMost: Int!) {
+  deleteMembers: deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
+  ) {
+    affectedCount
+  }
+  deleteOwner: deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId } }
+  ) {
     affectedCount
   }
   deleteFromgroupsCollection(filter: { id: { eq: $groupId } }) {
@@ -42,17 +50,31 @@ mutation removeGroup($groupId: Int!) {
   }
 }
 
-mutation addMember($grougId: Int!, $userId: UUID!) {
-  insertIntomembersCollection(
-    objects: { group_id: $grougId, user_id: $userId }
+mutation changeMembers(
+  $groupId: Int!
+  $owner: UUID!
+  $members: [membersInsertInput!]!
+  $atMost: Int!
+) {
+  deleteFrommembersCollection(
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
   ) {
+    affectedCount
+  }
+  insertIntomembersCollection(objects: $members) {
     affectedCount
   }
 }
 
-mutation removeMember($grougId: Int!, $userId: UUID!) {
+mutation changeMembersToOwnerOnly(
+  $groupId: Int!
+  $owner: UUID!
+  $atMost: Int!
+) {
   deleteFrommembersCollection(
-    filter: { group_id: { eq: $grougId }, user_id: { eq: $userId } }
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+    atMost: $atMost
   ) {
     affectedCount
   }

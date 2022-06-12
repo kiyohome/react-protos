@@ -156,6 +156,8 @@ const AppLayout = () => {
       <ErrorBoundary
         onReset={reset}
         fallback={<ErrorPage />}
+        // FIXME: ログ収集に送信するように変更したいです。
+        // eslint-disable-next-line no-console
         onError={(error) => console.log(error)}
       >
         <Outlet />

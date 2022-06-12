@@ -14,10 +14,13 @@ import { showNotification } from '@mantine/notifications';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/Auth';
+import { useConfig } from '../hooks/Config';
 import { NavigateState } from '../hooks/NavigateState';
 import { User, useUser } from '../hooks/User';
 
 const SignInPage = () => {
+  const config = useConfig();
+
   const form = useForm({
     initialValues: {
       email: '',
@@ -54,7 +57,12 @@ const SignInPage = () => {
   const close = () => navigate('/');
 
   return (
-    <Modal opened onClose={close} title="Sign in">
+    <Modal
+      opened
+      onClose={close}
+      title="Sign in"
+      centered={config.modalCentered}
+    >
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">

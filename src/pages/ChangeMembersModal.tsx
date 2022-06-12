@@ -8,36 +8,66 @@ import {
   Select,
   Text,
 } from '@mantine/core';
+import { formList, useForm } from '@mantine/form';
 import { useDebouncedValue, useSetState } from '@mantine/hooks';
+import { showNotification } from '@mantine/notifications';
+import { useEffect } from 'react';
+import { useQueryClient } from 'react-query';
 import { X } from 'tabler-icons-react';
 
-import { useFindProfilesQuery } from '../generated/graphql';
+import {
+  useChangeMembersMutation,
+  useChangeMembersToOwnerOnlyMutation,
+  useFindGroupsQuery,
+  useFindProfilesQuery,
+} from '../generated/graphql';
+import { useConfig } from '../hooks/Config';
 import useGraphQLClient from '../hooks/GraphQLClient';
+import { useUser } from '../hooks/User';
 
-type Props = {
-  opened: boolean;
-  onClose: () => void;
-  targetGroup: { id: number; name: string };
-  initialMembers: { id: string; nickname: string }[];
+type FromProps = {
+  groupId: number;
+  setLoading: (loading: boolean) => void;
+  close: () => void;
 };
 
-const ChangeMembersModal = ({
-  opened,
-  onClose,
-  targetGroup,
-  initialMembers,
-}: Props) => {
-  const [state, setState] = useSetState({
-    message: '',
-    loading: false,
-    userName: '',
-    members: initialMembers,
+const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
+  const config = useConfig();
+  const [user] = useUser();
+  const graphQLClient = useGraphQLClient();
+  const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
+    userId: user.id,
   });
 
-  console.log(initialMembers);
-  console.log(state.members);
+  const group = findGroupsQuery?.membersCollection?.edges.find(
+    (me) => me.node?.groups?.id === groupId
+  )?.node?.groups;
 
-  const members = state.members.map((member) => (
+  const initialMembers =
+    group?.membersCollection?.edges.map((memberEdge) => {
+      const member = memberEdge.node?.profiles;
+      return { id: member?.id ?? '', nickname: member?.nickname ?? '' };
+    }) ?? [];
+
+  const owner = (
+    <Badge
+      py="md"
+      size="lg"
+      radius="sm"
+      style={{ textTransform: 'none' }}
+      color="gray"
+    >
+      {group?.profiles?.nickname}
+    </Badge>
+  );
+
+  const [state, setState] = useSetState({ message: '' });
+
+  const form = useForm({
+    initialValues: { members: formList(initialMembers) },
+  });
+
+  const members = form.values.members.map((member, index) => (
     <Badge
       key={member.id}
       py="md"
@@ -49,15 +79,12 @@ const ChangeMembersModal = ({
       <Group spacing="xs">
         {member.nickname}
         <ActionIcon
-          color="gray"
+          color="blue"
           size="sm"
           radius="lg"
           variant="filled"
-          onClick={() =>
-            setState({
-              members: state.members.filter((m) => m.id !== member.id),
-            })
-          }
+          onClick={() => form.removeListItem('members', index)}
+          disabled={user.id === member.id}
         >
           <X />
         </ActionIcon>
@@ -65,14 +92,19 @@ const ChangeMembersModal = ({
     </Badge>
   ));
 
-  const [debouncedUserName] = useDebouncedValue(state.userName, 500);
+  const searchForm = useForm({
+    initialValues: { userName: '' },
+  });
 
-  const graphQLClient = useGraphQLClient();
+  const [debouncedUserName] = useDebouncedValue(
+    searchForm.values.userName,
+    500
+  );
 
   const { data: findProfilesQuery } = useFindProfilesQuery(
     graphQLClient,
     {
-      first: 20,
+      first: config.autocomplete,
       likeName: `${debouncedUserName}%`,
     },
     {
@@ -80,69 +112,111 @@ const ChangeMembersModal = ({
     }
   );
 
-  const result =
+  const searchResult =
     findProfilesQuery?.profilesCollection?.edges.map((profileEdge) => {
       const profile = profileEdge.node;
       return { label: profile?.nickname ?? '', value: profile?.id ?? '' };
     }) ?? [];
 
-  const submit = () => {
+  const queryClient = useQueryClient();
+  const changeMembersMutation = useChangeMembersMutation(graphQLClient);
+  const changeMembersToOwnerOnlyMutation =
+    useChangeMembersToOwnerOnlyMutation(graphQLClient);
+
+  const submit = async (values: typeof form.values) => {
     try {
-      setState({ loading: true });
+      setLoading(true);
 
-      console.log(state.members);
-      /*
-      await addGroupMutation.mutateAsync(
-        { ...values, owner: user.id },
-        {
-          onSuccess: async () => {
-            showNotification({ message: 'Added a new group.' });
-            await queryClient.invalidateQueries([
-              'findGroups',
-              { userId: user.id },
-            ]);
+      const selectedMembers = values.members
+        .filter((member) => member.id !== user.id)
+        .map((member) => ({
+          group_id: groupId,
+          user_id: member.id,
+        }));
+
+      const onSuccess = async () => {
+        showNotification({ message: 'Changed members.' });
+        await queryClient.invalidateQueries([
+          'findGroups',
+          { userId: user.id },
+        ]);
+      };
+
+      if (selectedMembers.length > 0) {
+        await changeMembersMutation.mutateAsync(
+          {
+            groupId,
+            owner: user.id,
+            members: selectedMembers,
+            atMost: config.atMost,
           },
-        }
-      );
-      */
+          { onSuccess }
+        );
+      } else {
+        await changeMembersToOwnerOnlyMutation.mutateAsync(
+          {
+            groupId,
+            owner: user.id,
+            atMost: config.atMost,
+          },
+          { onSuccess }
+        );
+      }
 
-      onClose();
+      close();
     } finally {
-      setState({ loading: false });
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    form.reset();
+    searchForm.reset();
+    // モーダルをオープンするたびにformを初期化したいため、
+    // モーダルが処理対象とするグループのIDを条件としています。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupId]);
+
   return (
-    <Modal opened={opened} onClose={onClose} title="Change members">
-      <LoadingOverlay visible={state.loading} />
+    <form onSubmit={form.onSubmit(submit)}>
       <Text color="red" size="sm">
         {state.message}
       </Text>
       <Text color="dimmed" mt="md" size="sm">
         Group
       </Text>
-      <Text>{targetGroup?.name}</Text>
+      <Text>{group?.name}</Text>
+      <Text color="dimmed" mt="md" size="sm">
+        Owner
+      </Text>
+      <Text>{owner}</Text>
       <Text color="dimmed" mt="md" size="sm">
         Members
       </Text>
       <Group>
         <Select
-          label="Select user to be added to the group."
-          placeholder="Type a user name to search"
-          data={result}
+          label="Pick the user you want to add."
+          placeholder="Search by user name"
+          data={searchResult}
           searchable
           nothingFound="No users"
           onSearchChange={(value) => {
-            setState({ userName: value });
+            searchForm.setFieldValue('userName', value);
           }}
           onChange={(value) => {
-            const member = result.find((m) => m.value === value);
+            const member = searchResult.find((m) => m.value === value);
+
             if (member === undefined) return;
-            state.members.concat(...state.members, {
-              id: member?.value,
-              nickname: member?.label,
+
+            const isAlreadyMember =
+              form.values.members.find((m) => m.id === member.value) !==
+              undefined;
+            if (isAlreadyMember) return;
+
+            form.addListItem('members', {
+              id: member.value,
+              nickname: member.label,
             });
-            setState({ userName: '' });
           }}
         />
       </Group>
@@ -150,10 +224,40 @@ const ChangeMembersModal = ({
         {members}
       </Group>
       <Group position="right" mt="md">
-        <Button type="submit" size="sm" onClick={submit}>
+        <Button type="submit" size="sm">
           Save
         </Button>
       </Group>
+    </form>
+  );
+};
+
+type ModalProps = {
+  opened: boolean;
+  close: () => void;
+  groupId: number;
+};
+
+const ChangeMembersModal = ({ opened, close, groupId }: ModalProps) => {
+  const config = useConfig();
+
+  const [state, setState] = useSetState({
+    loading: false,
+  });
+
+  return (
+    <Modal
+      opened={opened}
+      onClose={close}
+      title="Change members"
+      centered={config.modalCentered}
+    >
+      <LoadingOverlay visible={state.loading} />
+      <ChangeMembersForm
+        groupId={groupId}
+        setLoading={(loading) => setState({ loading })}
+        close={close}
+      />
     </Modal>
   );
 };

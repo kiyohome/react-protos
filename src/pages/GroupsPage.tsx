@@ -21,26 +21,18 @@ import Loading from './Loading';
 import RemoveGroupModal from './RemoveGroupModal';
 
 type GroupsProps = {
-  setGroup: (id: number, name: string) => void;
-  setMembers: (members: { id: string; nickname: string }[]) => void;
-  openChangeMembers: () => void;
-  openRemove: () => void;
+  openChangeMembers: (groupId: number) => void;
+  openRemove: (groupId: number) => void;
 };
 
-const Groups = ({
-  setGroup,
-  setMembers,
-  openChangeMembers,
-  openRemove,
-}: GroupsProps) => {
-  const isMobile = useIsMobile();
+const Groups = ({ openChangeMembers, openRemove }: GroupsProps) => {
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
-
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
     userId: user.id,
   });
 
+  const isMobile = useIsMobile();
   const rows = findGroupsQuery?.membersCollection?.edges.map((memberEdge) => {
     const group = memberEdge.node?.groups;
 
@@ -48,20 +40,12 @@ const Groups = ({
 
     const isOwner = user.id === group?.profiles?.id;
 
-    const memberValues =
-      group?.membersCollection?.edges.map((m) => {
-        const profile = m.node?.profiles;
-        return { id: profile?.id ?? '', nickname: profile?.nickname ?? '' };
-      }) ?? [];
-
     const menu = (
       <Menu>
         <MenuItem
           onClick={() => {
             if (group) {
-              setGroup(group.id, group.name);
-              setMembers(memberValues);
-              openChangeMembers();
+              openChangeMembers(group.id);
             }
           }}
         >
@@ -71,8 +55,7 @@ const Groups = ({
         <MenuItem
           onClick={() => {
             if (group) {
-              setGroup(group.id, group.name);
-              openRemove();
+              openRemove(group.id);
             }
           }}
         >
@@ -83,6 +66,7 @@ const Groups = ({
 
     const owner = (
       <Badge
+        py="md"
         size="lg"
         radius="sm"
         style={{ textTransform: 'none' }}
@@ -97,6 +81,7 @@ const Groups = ({
       return (
         <Badge
           key={profile?.id}
+          py="md"
           size="lg"
           radius="sm"
           style={{ textTransform: 'none' }}
@@ -163,8 +148,7 @@ type GroupsState = {
   addGroupOpened: boolean;
   changeMembersOpened: boolean;
   removeGroupOpened: boolean;
-  group: { id: number; name: string };
-  members: { id: string; nickname: string }[];
+  groupId: number;
 };
 
 const GroupsPage = () => {
@@ -172,8 +156,7 @@ const GroupsPage = () => {
     addGroupOpened: false,
     changeMembersOpened: false,
     removeGroupOpened: false,
-    group: { id: -1, name: '' },
-    members: [],
+    groupId: -1,
   });
 
   const clearState = () => {
@@ -181,8 +164,7 @@ const GroupsPage = () => {
       addGroupOpened: false,
       changeMembersOpened: false,
       removeGroupOpened: false,
-      group: { id: -1, name: '' },
-      members: [],
+      groupId: -1,
     });
   };
 
@@ -200,26 +182,25 @@ const GroupsPage = () => {
       <Suspense fallback={<Loading />}>
         <Group mt="md">
           <Groups
-            setGroup={(id: number, name: string) => {
-              setState({ group: { id, name } });
-            }}
-            setMembers={(members) => setState({ members })}
-            openChangeMembers={() => setState({ changeMembersOpened: true })}
-            openRemove={() => setState({ removeGroupOpened: true })}
+            openChangeMembers={(groupId) =>
+              setState({ changeMembersOpened: true, groupId })
+            }
+            openRemove={(groupId) =>
+              setState({ removeGroupOpened: true, groupId })
+            }
           />
         </Group>
       </Suspense>
       <AddGroupModal opened={state.addGroupOpened} onClose={clearState} />
       <ChangeMembersModal
         opened={state.changeMembersOpened}
-        onClose={clearState}
-        targetGroup={state.group}
-        initialMembers={state.members}
+        close={clearState}
+        groupId={state.groupId}
       />
       <RemoveGroupModal
         opened={state.removeGroupOpened}
-        onClose={clearState}
-        targetGroup={state.group}
+        close={clearState}
+        groupId={state.groupId}
       />
     </>
   );

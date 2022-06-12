@@ -12,6 +12,7 @@ import { showNotification } from '@mantine/notifications';
 import { useQueryClient } from 'react-query';
 
 import { useAddGroupMutation } from '../generated/graphql';
+import { useConfig } from '../hooks/Config';
 import useGraphQLClient from '../hooks/GraphQLClient';
 import { useUser } from '../hooks/User';
 
@@ -21,6 +22,8 @@ type Props = {
 };
 
 const AddGroupModal = ({ opened, onClose }: Props) => {
+  const config = useConfig();
+
   const form = useForm({
     initialValues: {
       name: '',
@@ -58,7 +61,12 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="Add a new group">
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title="Add a new group"
+      centered={config.modalCentered}
+    >
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(submit)}>
         <Text color="red" size="sm">
