@@ -68,8 +68,9 @@
   VITE_SUPABASE_ANON_KEY=プロジェクトのAPIキー（anonキー）
   VITE_SUPABASE_PERSIST_SESSION=no
   ```
-- Supabaseのダッシュボードからテーブルとテストデータを作成します。
-  - TODO: 作成手順
+- SupabaseのダッシュボードからSQLを実行してテーブルやポリシー等を作成します。
+  - [SQLでlikeを使えるようにSupabaseをカスタマイズ](./backend/sql/like_operation.sql)
+  - [アプリのDDL](./backend/sql/all.sql)
 - 次のコマンドでアプリを起動します。
   ```
   $ yarn
