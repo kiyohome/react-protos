@@ -27,8 +27,30 @@ query findGroups($userId: UUID!) {
   }
 }
 
+query findMembers($groupId: Int!, $owner: UUID!) {
+  membersCollection(
+    filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }
+  ) {
+    edges {
+      node {
+        profiles {
+          id
+          nickname
+          avatar_url
+        }
+      }
+    }
+  }
+}
+
 mutation addGroup($name: String!, $owner: UUID!) {
   insertIntogroupsCollection(objects: [{ name: $name, owner: $owner }]) {
+    affectedCount
+  }
+}
+
+mutation editGroup($groupId: Int!, $input: groupsUpdateInput!) {
+  updategroupsCollection(set: $input, filter: { id: { eq: $groupId } }) {
     affectedCount
   }
 }
