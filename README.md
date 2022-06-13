@@ -61,7 +61,7 @@
 ## 動かすまで
 
 - [Supabase](https://supabase.com/docs/)でプロジェクトを作ります。
-- src/.envファイルを作成して環境変数を設定します。
+- プロジェクトのルート直下に.envファイルを作成して環境変数を設定します。
   ```
   VITE_SUPABASE_URL=プロジェクトのURL
   VITE_SUPABASE_ENDPOINT=プロジェクトのGraphQLのURL
