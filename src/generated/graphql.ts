@@ -479,7 +479,7 @@ export type Groups = {
   id: Scalars['Int'];
   membersCollection?: Maybe<MembersConnection>;
   name: Scalars['String'];
-  owner?: Maybe<Scalars['UUID']>;
+  owner: Scalars['UUID'];
   profiles?: Maybe<Profiles>;
 };
 
@@ -735,6 +735,15 @@ export type AddGroupMutation = {
   insertIntogroupsCollection?: { affectedCount: number } | null;
 };
 
+export type ChangeGroupMutationVariables = Exact<{
+  groupId: Scalars['Int'];
+  input: GroupsUpdateInput;
+}>;
+
+export type ChangeGroupMutation = {
+  updategroupsCollection: { affectedCount: number };
+};
+
 export type RemoveGroupMutationVariables = Exact<{
   groupId: Scalars['Int'];
   owner: Scalars['UUID'];
@@ -855,6 +864,39 @@ export const useAddGroupMutation = <TError = unknown, TContext = unknown>(
       fetcher<AddGroupMutation, AddGroupMutationVariables>(
         client,
         AddGroupDocument,
+        variables,
+        headers
+      )(),
+    options
+  );
+export const ChangeGroupDocument = `
+    mutation changeGroup($groupId: Int!, $input: groupsUpdateInput!) {
+  updategroupsCollection(set: $input, filter: {id: {eq: $groupId}}) {
+    affectedCount
+  }
+}
+    `;
+export const useChangeGroupMutation = <TError = unknown, TContext = unknown>(
+  client: GraphQLClient,
+  options?: UseMutationOptions<
+    ChangeGroupMutation,
+    TError,
+    ChangeGroupMutationVariables,
+    TContext
+  >,
+  headers?: RequestInit['headers']
+) =>
+  useMutation<
+    ChangeGroupMutation,
+    TError,
+    ChangeGroupMutationVariables,
+    TContext
+  >(
+    ['changeGroup'],
+    (variables?: ChangeGroupMutationVariables) =>
+      fetcher<ChangeGroupMutation, ChangeGroupMutationVariables>(
+        client,
+        ChangeGroupDocument,
         variables,
         headers
       )(),

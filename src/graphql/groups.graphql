@@ -33,6 +33,12 @@ mutation addGroup($name: String!, $owner: UUID!) {
   }
 }
 
+mutation changeGroup($groupId: Int!, $input: groupsUpdateInput!) {
+  updategroupsCollection(set: $input, filter: { id: { eq: $groupId } }) {
+    affectedCount
+  }
+}
+
 mutation removeGroup($groupId: Int!, $owner: UUID!, $atMost: Int!) {
   deleteMembers: deleteFrommembersCollection(
     filter: { group_id: { eq: $groupId }, user_id: { neq: $owner } }

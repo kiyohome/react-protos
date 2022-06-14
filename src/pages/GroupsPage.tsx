@@ -16,16 +16,22 @@ import useGraphQLClient from '../hooks/GraphQLClient';
 import useIsMobile from '../hooks/Mobile';
 import { useUser } from '../hooks/User';
 import AddGroupModal from './AddGroupModal';
+import ChangeGroupModal from './ChangeGroupModal';
 import ChangeMembersModal from './ChangeMembersModal';
 import Loading from './Loading';
 import RemoveGroupModal from './RemoveGroupModal';
 
 type GroupsProps = {
   openChangeMembers: (groupId: number) => void;
+  openChangeGroup: (groupId: number) => void;
   openRemove: (groupId: number) => void;
 };
 
-const Groups = ({ openChangeMembers, openRemove }: GroupsProps) => {
+const Groups = ({
+  openChangeMembers,
+  openChangeGroup,
+  openRemove,
+}: GroupsProps) => {
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
@@ -52,7 +58,16 @@ const Groups = ({ openChangeMembers, openRemove }: GroupsProps) => {
         >
           Change members
         </MenuItem>
-        <MenuItem disabled={!isOwner}>Edit group</MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (group) {
+              openChangeGroup(group.id);
+            }
+          }}
+          disabled={!isOwner}
+        >
+          Change group
+        </MenuItem>
         <MenuItem
           onClick={() => {
             if (group) {
@@ -149,6 +164,7 @@ const Groups = ({ openChangeMembers, openRemove }: GroupsProps) => {
 type GroupsState = {
   addGroupOpened: boolean;
   changeMembersOpened: boolean;
+  changeGroupOpened: boolean;
   removeGroupOpened: boolean;
   groupId: number;
 };
@@ -157,6 +173,7 @@ const GroupsPage = () => {
   const [state, setState] = useSetState<GroupsState>({
     addGroupOpened: false,
     changeMembersOpened: false,
+    changeGroupOpened: false,
     removeGroupOpened: false,
     groupId: -1,
   });
@@ -165,6 +182,7 @@ const GroupsPage = () => {
     setState({
       addGroupOpened: false,
       changeMembersOpened: false,
+      changeGroupOpened: false,
       removeGroupOpened: false,
       groupId: -1,
     });
@@ -187,6 +205,9 @@ const GroupsPage = () => {
             openChangeMembers={(groupId) =>
               setState({ changeMembersOpened: true, groupId })
             }
+            openChangeGroup={(groupId) =>
+              setState({ changeGroupOpened: true, groupId })
+            }
             openRemove={(groupId) =>
               setState({ removeGroupOpened: true, groupId })
             }
@@ -196,6 +217,11 @@ const GroupsPage = () => {
       <AddGroupModal opened={state.addGroupOpened} onClose={clearState} />
       <ChangeMembersModal
         opened={state.changeMembersOpened}
+        close={clearState}
+        groupId={state.groupId}
+      />
+      <ChangeGroupModal
+        opened={state.changeGroupOpened}
         close={clearState}
         groupId={state.groupId}
       />
