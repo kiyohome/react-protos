@@ -193,33 +193,31 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
       <Text color="dimmed" mt="md" size="sm">
         Members
       </Text>
-      <Group>
-        <Select
-          label="Pick the user you want to add."
-          placeholder="Search by user name"
-          data={searchResult}
-          searchable
-          nothingFound="No users"
-          onSearchChange={(value) => {
-            searchForm.setFieldValue('userName', value);
-          }}
-          onChange={(value) => {
-            const member = searchResult.find((m) => m.value === value);
+      <Select
+        label="Pick the user you want to add."
+        placeholder="Search by user name"
+        data={searchResult}
+        searchable
+        nothingFound="No users"
+        onSearchChange={(value) => {
+          searchForm.setFieldValue('userName', value);
+        }}
+        onChange={(value) => {
+          const member = searchResult.find((m) => m.value === value);
 
-            if (member === undefined) return;
+          if (member === undefined) return;
 
-            const isAlreadyMember =
-              form.values.members.find((m) => m.id === member.value) !==
-              undefined;
-            if (isAlreadyMember) return;
+          const isAlreadyMember =
+            form.values.members.find((m) => m.id === member.value) !==
+            undefined;
+          if (isAlreadyMember) return;
 
-            form.addListItem('members', {
-              id: member.value,
-              nickname: member.label,
-            });
-          }}
-        />
-      </Group>
+          form.addListItem('members', {
+            id: member.value,
+            nickname: member.label,
+          });
+        }}
+      />
       <Group mt="md" spacing="sm">
         {members}
       </Group>
