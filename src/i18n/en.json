@@ -1,0 +1,16 @@
+{
+  "app": {
+    "appName": "App Name",
+    "guest": "Guest",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "footerMessage": "Here comes the footer."
+  },
+  "groups": {
+    "title": "Groups"
+  },
+  "events": {
+    "title": "Events"
+  }
+}

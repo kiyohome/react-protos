@@ -1,0 +1,16 @@
+{
+  "app": {
+    "appName": "アプリ名",
+    "guest": "ゲスト",
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "signOut": "サインアウト",
+    "footerMessage": "ここにフッターが来ます。"
+  },
+  "groups": {
+    "title": "グループ"
+  },
+  "events": {
+    "title": "イベント"
+  }
+}

@@ -51,11 +51,15 @@
   - 参考にしたもの
     - [React QueryのSuspese Modeを使ってみた!](https://re-engines.com/2022/04/11/react-query-suspense/)
     - [React Query Error Handling](https://tkdodo.eu/blog/react-query-error-handling)
+- 多言語対応
+  - [i18next](https://www.i18next.com/)
+  - 参考にしたもの
+    - [Reactで簡単に多言語対応する方法は？react-i18nextの使い方](https://devlog.atlas.jp/2021/12/08/4140)
+    - [i18next + i18next-browser-languagedetectorでの開発時には、localStorageに注意する](https://wp-kyoto.net/should-remove-localstorage-when-debugging-i18next-browser-lang-detector/)
 
 ## これから含めるもの
 
 - バリデーション
-- 多言語対応
 - モックライブラリ
 
 ## 動かすまで
