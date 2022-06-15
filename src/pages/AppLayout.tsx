@@ -29,6 +29,8 @@ import logo from '../logo.svg';
 import ErrorPage from './ErrorPage';
 
 const AppLayout = () => {
+  const { t, i18n } = useTranslation();
+
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({
@@ -37,12 +39,10 @@ const AppLayout = () => {
     loading: false,
   });
 
-  const { t, i18n } = useTranslation();
-
   const navigate = useNavigate();
   const links = [
-    { label: t('groups.title'), path: '/groups' },
-    { label: t('events.title'), path: '/events' },
+    { label: t('groups'), path: '/groups' },
+    { label: t('events'), path: '/events' },
   ];
 
   const [user] = useUser();
@@ -52,7 +52,7 @@ const AppLayout = () => {
     try {
       setState({ loading: true });
       await auth.signOut();
-      showNotification({ message: 'Successful sign out.' });
+      showNotification({ message: t('signOut.done.message') });
       window.location.href = '/';
     } finally {
       setState({ loading: false });
@@ -121,12 +121,11 @@ const AppLayout = () => {
               <Group spacing={6}>
                 <Image src={logo} width={30} height={30} />
                 <Title order={4} mt={-3}>
-                  {t('app.appName')}
+                  {t('appName')}
                 </Title>
               </Group>
             </Anchor>
             <Group>
-              <Text>{i18n.language.substring(0, 2)}</Text>
               <Menu
                 opened={state.menuOpened}
                 onOpen={() => setState({ menuOpened: true })}
@@ -134,18 +133,19 @@ const AppLayout = () => {
                 control={<Avatar radius="md" size="md" />}
               >
                 <Menu.Label>
-                  {auth.isSignedIn ? user.name : t('app.guest')}
+                  {auth.isSignedIn ? user.name : t('guest')} (
+                  {i18n.language.substring(0, 2)})
                 </Menu.Label>
                 <Divider />
                 {auth.isSignedIn ? (
-                  <Menu.Item onClick={signOut}>{t('app.signOut')}</Menu.Item>
+                  <Menu.Item onClick={signOut}>{t('signOut')}</Menu.Item>
                 ) : (
                   <>
                     <Menu.Item onClick={() => navigate('/signin')}>
-                      {t('app.signIn')}
+                      {t('signIn')}
                     </Menu.Item>
                     <Menu.Item onClick={() => navigate('/signup')}>
-                      {t('app.signUp')}
+                      {t('signUp')}
                     </Menu.Item>
                   </>
                 )}
@@ -156,7 +156,7 @@ const AppLayout = () => {
       }
       footer={
         <Footer height={60} p="md">
-          <Text>{t('app.footerMessage')}</Text>
+          <Text>{t('footer.message')}</Text>
         </Footer>
       }
     >

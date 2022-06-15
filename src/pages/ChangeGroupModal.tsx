@@ -11,6 +11,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useDebouncedValue, useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 import {
@@ -28,7 +29,8 @@ type FormProps = {
 };
 
 const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
-  const config = useConfig();
+  const { t } = useTranslation();
+
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
@@ -38,8 +40,6 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
   const group = findGroupsQuery?.membersCollection?.edges.find(
     (me) => me.node?.groups?.id === groupId
   )?.node?.groups;
-
-  const [state, setState] = useSetState({ message: '' });
 
   const form = useForm({
     initialValues: {
@@ -112,7 +112,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
       }
 
       const onSuccess = async () => {
-        showNotification({ message: 'Edited group.' });
+        showNotification({ message: t('group.change.done.message') });
         await queryClient.invalidateQueries([
           'findGroups',
           { userId: user.id },
@@ -128,28 +128,25 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
 
   return (
     <form onSubmit={form.onSubmit(submit)}>
-      <Text color="red" size="sm">
-        {state.message}
-      </Text>
       <Text color="dimmed" mt="md" size="sm">
-        Group
+        {t('group')}
       </Text>
       <TextInput
         required
         type="text"
-        label="Name"
-        placeholder="Group name"
+        label={t('name')}
+        placeholder={t('group.name.placeholder')}
         {...form.getInputProps('name')}
       />
       <Text color="dimmed" mt="md" size="sm">
-        Owner
+        {t('owner')}
       </Text>
       <Select
         label="Pick the user you wish to assign as the owner."
         placeholder="Search by user name"
         data={searchResult.filter((m) => m.label.startsWith(debouncedUserName))}
         searchable
-        nothingFound="No users"
+        nothingFound={t('no.users')}
         onSearchChange={(value) => {
           searchForm.setFieldValue('userName', value);
         }}
@@ -166,12 +163,12 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
       />
       <Group mt="xs">{owner}</Group>
       <Text color="dimmed" mt="md" size="sm">
-        Members
+        {t('members')}
       </Text>
       <Group>{members}</Group>
       <Group position="right" mt="md">
         <Button type="submit" size="sm">
-          Save
+          {t('save')}
         </Button>
       </Group>
     </form>
@@ -186,6 +183,7 @@ type ModalProps = {
 
 const ChangeGroupModal = ({ opened, close, groupId }: ModalProps) => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const [state, setState] = useSetState({ loading: false });
 
@@ -193,7 +191,7 @@ const ChangeGroupModal = ({ opened, close, groupId }: ModalProps) => {
     <Modal
       opened={opened}
       onClose={close}
-      title="Edit group"
+      title={t('group.change')}
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />

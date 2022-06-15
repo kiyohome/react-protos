@@ -11,6 +11,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/Auth';
@@ -18,6 +19,7 @@ import { useConfig } from '../hooks/Config';
 
 const SignUpPage = () => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const form = useForm({
     initialValues: {
@@ -28,7 +30,7 @@ const SignUpPage = () => {
     },
     validate: {
       confirmPassword: (value, values) =>
-        value !== values.password ? 'Passwords did not match' : null,
+        value !== values.password ? t('password.notMatch.message') : null,
     },
   });
 
@@ -46,7 +48,7 @@ const SignUpPage = () => {
         setState({ messaage: error.message });
       } else {
         navigate('/signin', { replace: true });
-        showNotification({ message: 'Signed up.' });
+        showNotification({ message: t('signUp.done.message') });
       }
     } finally {
       setState({ loading: false });
@@ -70,46 +72,46 @@ const SignUpPage = () => {
         <TextInput
           required
           type="text"
-          label="Nickname"
-          placeholder="Nickname"
+          label={t('nickname')}
+          placeholder={t('nickname.placeholder')}
           {...form.getInputProps('nickname')}
-          description="Nicknames must be unique across services. If you cannot sign up, please change your nickname."
+          description={t('nickname.description')}
         />
         <TextInput
           mt="md"
           required
           type="email"
-          label="Email"
-          placeholder="your@email.com"
+          label={t('email')}
+          placeholder={t('email.placeholder')}
           {...form.getInputProps('email')}
-          description="After signing up, please check your email for activation."
+          description={t('email.description')}
           autoComplete="email"
         />
         <PasswordInput
           mt="md"
           required
-          label="Password"
-          placeholder="Password"
+          label={t('password')}
+          placeholder={t('password.placeholder')}
           {...form.getInputProps('password')}
           autoComplete="new-password"
         />
         <PasswordInput
           mt="md"
           required
-          label="Confirm Password"
-          placeholder="Confirm Password"
+          label={t('password.confirm')}
+          placeholder={t('password.confirm.placeholder')}
           {...form.getInputProps('confirmPassword')}
           autoComplete="new-password"
         />
         <Group position="apart" mt="md">
           <Text color="dimmed" size="xs">
-            Already have an account?{' '}
+            {t('signUp.signIn.message')}{' '}
             <Anchor component={Link} to="/signin" size="xs">
-              Sign in
+              {t('signIn')}
             </Anchor>
           </Text>
           <Button type="submit" size="sm">
-            Sign up
+            {t('signUp')}
           </Button>
         </Group>
       </form>

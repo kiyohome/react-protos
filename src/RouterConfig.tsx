@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AccessControl from './pages/AccessControl';
 import AppLayout from './pages/AppLayout';
 import EventsPage from './pages/EventsPage';
-import GroupPage from './pages/GroupPage';
 import GroupsPage from './pages/GroupsPage';
 import PageNotFoundPage from './pages/PageNotFoundPage';
 import SignInPage from './pages/SignInPage';
@@ -25,7 +24,6 @@ const RouterConfig = () => (
             </AccessControl>
           }
         />
-        <Route path="groups/:groupId" element={<GroupPage />} />
         <Route
           path="events"
           element={

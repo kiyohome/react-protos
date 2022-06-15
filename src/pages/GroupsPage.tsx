@@ -10,6 +10,7 @@ import {
 } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useFindGroupsQuery } from '../generated/graphql';
 import useGraphQLClient from '../hooks/GraphQLClient';
@@ -32,13 +33,17 @@ const Groups = ({
   openChangeGroup,
   openRemove,
 }: GroupsProps) => {
+  const { t } = useTranslation();
+
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
+
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
     userId: user.id,
   });
 
   const isMobile = useIsMobile();
+
   const rows = findGroupsQuery?.membersCollection?.edges.map((memberEdge) => {
     const group = memberEdge.node?.groups;
 
@@ -56,7 +61,7 @@ const Groups = ({
           }}
           disabled={!isOwner}
         >
-          Change members
+          {t('members.change')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -66,7 +71,7 @@ const Groups = ({
           }}
           disabled={!isOwner}
         >
-          Change group
+          {t('group.change')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -76,7 +81,7 @@ const Groups = ({
           }}
           disabled={!isOwner}
         >
-          Remove group
+          {t('group.remove')}
         </MenuItem>
       </Menu>
     );
@@ -118,11 +123,11 @@ const Groups = ({
               {menu}
             </Group>
             <Text mt="md" size="xs" color="dimmed">
-              Members
+              {t('members')}
             </Text>
             <Group spacing="sm">{members}</Group>
             <Text mt="md" size="xs" color="dimmed">
-              Owner
+              {t('owner')}
             </Text>
             <Group>{owner}</Group>
           </td>
@@ -148,10 +153,10 @@ const Groups = ({
         <>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Members</th>
-              <th>Owner</th>
-              <th>Action</th>
+              <th>{t('name')}</th>
+              <th>{t('members')}</th>
+              <th>{t('owner')}</th>
+              <th>{t('action')}</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>

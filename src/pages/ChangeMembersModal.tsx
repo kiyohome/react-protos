@@ -12,6 +12,7 @@ import { formList, useForm } from '@mantine/form';
 import { useDebouncedValue, useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { X } from 'tabler-icons-react';
 
@@ -33,6 +34,8 @@ type FromProps = {
 
 const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
   const config = useConfig();
+  const { t } = useTranslation();
+
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
@@ -60,8 +63,6 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
       {group?.profiles?.nickname}
     </Badge>
   );
-
-  const [state, setState] = useSetState({ message: '' });
 
   const form = useForm({
     initialValues: { members: formList(initialMembers) },
@@ -135,7 +136,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
         }));
 
       const onSuccess = async () => {
-        showNotification({ message: 'Changed members.' });
+        showNotification({ message: t('members.change.done.message') });
         await queryClient.invalidateQueries([
           'findGroups',
           { userId: user.id },
@@ -179,26 +180,23 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
 
   return (
     <form onSubmit={form.onSubmit(submit)}>
-      <Text color="red" size="sm">
-        {state.message}
-      </Text>
       <Text color="dimmed" mt="md" size="sm">
-        Group
+        {t('group')}
       </Text>
       <Text>{group?.name}</Text>
       <Text color="dimmed" mt="md" size="sm">
-        Owner
+        {t('owner')}
       </Text>
       <Text>{owner}</Text>
       <Text color="dimmed" mt="md" size="sm">
-        Members
+        {t('members')}
       </Text>
       <Select
         label="Pick the user you want to add."
         placeholder="Search by user name"
         data={searchResult}
         searchable
-        nothingFound="No users"
+        nothingFound={t('no.users')}
         onSearchChange={(value) => {
           searchForm.setFieldValue('userName', value);
         }}
@@ -223,7 +221,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
       </Group>
       <Group position="right" mt="md">
         <Button type="submit" size="sm">
-          Save
+          {t('save')}
         </Button>
       </Group>
     </form>
@@ -238,6 +236,7 @@ type ModalProps = {
 
 const ChangeMembersModal = ({ opened, close, groupId }: ModalProps) => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const [state, setState] = useSetState({
     loading: false,
@@ -247,7 +246,7 @@ const ChangeMembersModal = ({ opened, close, groupId }: ModalProps) => {
     <Modal
       opened={opened}
       onClose={close}
-      title="Change members"
+      title={t('members.change')}
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
