@@ -19,6 +19,7 @@ import {
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { ErrorBoundary } from 'react-error-boundary';
+import { useTranslation } from 'react-i18next';
 import { useQueryErrorResetBoundary } from 'react-query';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
@@ -28,6 +29,8 @@ import logo from '../logo.svg';
 import ErrorPage from './ErrorPage';
 
 const AppLayout = () => {
+  const { t, i18n } = useTranslation();
+
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({
@@ -38,8 +41,8 @@ const AppLayout = () => {
 
   const navigate = useNavigate();
   const links = [
-    { label: 'Groups', path: '/groups' },
-    { label: 'Events', path: '/events' },
+    { label: t('groups'), path: '/groups' },
+    { label: t('events'), path: '/events' },
   ];
 
   const [user] = useUser();
@@ -49,7 +52,7 @@ const AppLayout = () => {
     try {
       setState({ loading: true });
       await auth.signOut();
-      showNotification({ message: 'Successful sign out.' });
+      showNotification({ message: t('signOut.done.message') });
       window.location.href = '/';
     } finally {
       setState({ loading: false });
@@ -118,37 +121,42 @@ const AppLayout = () => {
               <Group spacing={6}>
                 <Image src={logo} width={30} height={30} />
                 <Title order={4} mt={-3}>
-                  App Name
+                  {t('appName')}
                 </Title>
               </Group>
             </Anchor>
-            <Menu
-              opened={state.menuOpened}
-              onOpen={() => setState({ menuOpened: true })}
-              onClose={() => setState({ menuOpened: false })}
-              control={<Avatar radius="md" size="md" />}
-            >
-              <Menu.Label>{user.name}</Menu.Label>
-              <Divider />
-              {auth.isSignedIn ? (
-                <Menu.Item onClick={signOut}>Sign out</Menu.Item>
-              ) : (
-                <>
-                  <Menu.Item onClick={() => navigate('/signin')}>
-                    Sign in
-                  </Menu.Item>
-                  <Menu.Item onClick={() => navigate('/signup')}>
-                    Sign up
-                  </Menu.Item>
-                </>
-              )}
-            </Menu>
+            <Group>
+              <Menu
+                opened={state.menuOpened}
+                onOpen={() => setState({ menuOpened: true })}
+                onClose={() => setState({ menuOpened: false })}
+                control={<Avatar radius="md" size="md" />}
+              >
+                <Menu.Label>
+                  {auth.isSignedIn ? user.name : t('guest')} (
+                  {i18n.language.substring(0, 2)})
+                </Menu.Label>
+                <Divider />
+                {auth.isSignedIn ? (
+                  <Menu.Item onClick={signOut}>{t('signOut')}</Menu.Item>
+                ) : (
+                  <>
+                    <Menu.Item onClick={() => navigate('/signin')}>
+                      {t('signIn')}
+                    </Menu.Item>
+                    <Menu.Item onClick={() => navigate('/signup')}>
+                      {t('signUp')}
+                    </Menu.Item>
+                  </>
+                )}
+              </Menu>
+            </Group>
           </Group>
         </Header>
       }
       footer={
         <Footer height={60} p="md">
-          <Text>Here comes the footer.</Text>
+          <Text>{t('footer.message')}</Text>
         </Footer>
       }
     >

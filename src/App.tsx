@@ -14,6 +14,7 @@ import {
 import { useConfig } from './hooks/Config';
 import RouterConfig from './RouterConfig';
 import './App.css';
+import './i18n/config';
 
 const App = () => {
   const config = useConfig();

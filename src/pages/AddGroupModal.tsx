@@ -1,14 +1,8 @@
-import {
-  Button,
-  Group,
-  LoadingOverlay,
-  Modal,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { Button, Group, LoadingOverlay, Modal, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 import { useAddGroupMutation } from '../generated/graphql';
@@ -23,6 +17,7 @@ type Props = {
 
 const AddGroupModal = ({ opened, onClose }: Props) => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const form = useForm({
     initialValues: {
@@ -30,7 +25,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
     },
   });
 
-  const [state, setState] = useSetState({ message: '', loading: false });
+  const [state, setState] = useSetState({ loading: false });
 
   const graphQLClient = useGraphQLClient();
   const addGroupMutation = useAddGroupMutation(graphQLClient);
@@ -45,7 +40,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
         { ...values, owner: user.id },
         {
           onSuccess: async () => {
-            showNotification({ message: 'Added a new group.' });
+            showNotification({ message: t('group.add.done.message') });
             await queryClient.invalidateQueries([
               'findGroups',
               { userId: user.id },
@@ -64,24 +59,21 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
     <Modal
       opened={opened}
       onClose={onClose}
-      title="Add a new group"
+      title={t('group.add')}
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
       <form onSubmit={form.onSubmit(submit)}>
-        <Text color="red" size="sm">
-          {state.message}
-        </Text>
         <TextInput
           required
           type="text"
-          label="Name"
-          placeholder="Group name"
+          label={t('name')}
+          placeholder={t('group.name.placeholder')}
           {...form.getInputProps('name')}
         />
         <Group position="right" mt="md">
           <Button type="submit" size="sm">
-            Add
+            {t('add')}
           </Button>
         </Group>
       </form>

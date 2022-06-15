@@ -11,6 +11,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/Auth';
@@ -20,6 +21,7 @@ import { User, useUser } from '../hooks/User';
 
 const SignInPage = () => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const form = useForm({
     initialValues: {
@@ -45,9 +47,9 @@ const SignInPage = () => {
         setUser(new User(profile.id, profile.nickname, profile.avatar_url));
         const path = location.state?.from?.pathname || '/';
         navigate(path, { replace: true });
-        showNotification({ message: 'Signed in.' });
+        showNotification({ message: t('signIn.done.message') });
       } else {
-        setState({ message: 'Email or password is incorrect.' });
+        setState({ message: t('signIn.failure.message') });
       }
     } finally {
       setState({ loading: false });
@@ -60,7 +62,7 @@ const SignInPage = () => {
     <Modal
       opened
       onClose={close}
-      title="Sign in"
+      title={t('signIn')}
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
@@ -71,28 +73,28 @@ const SignInPage = () => {
         <TextInput
           required
           type="email"
-          label="Email"
-          placeholder="your@email.com"
+          label={t('email')}
+          placeholder={t('email.placeholder')}
           {...form.getInputProps('email')}
           autoComplete="email"
         />
         <PasswordInput
           mt="md"
           required
-          label="Password"
-          placeholder="Password"
+          label={t('password')}
+          placeholder={t('password.placeholder')}
           {...form.getInputProps('password')}
           autoComplete="current-password"
         />
         <Group position="apart" mt="md">
           <Text color="dimmed" size="xs">
-            Don&apos;t have an account?{' '}
+            {t('signIn.signUp.message')}{' '}
             <Anchor component={Link} to="/signup" size="xs">
-              Sign up
+              {t('signUp')}
             </Anchor>
           </Text>
           <Button type="submit" size="sm">
-            Sign in
+            {t('signIn')}
           </Button>
         </Group>
       </form>

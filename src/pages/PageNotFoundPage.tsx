@@ -1,11 +1,17 @@
+import { useTranslation } from 'react-i18next';
+
 import ErrorPageLayout from './ErrorPageLayout';
 
-const PageNotFoundPage = () => (
-  <ErrorPageLayout
-    label="404"
-    title="You have found a secret place."
-    description="Unfortunately, this is only a 404 page. You may have mistyped the address, or the page has been moved to another URL."
-  />
-);
+const PageNotFoundPage = () => {
+  const { t } = useTranslation();
+
+  return (
+    <ErrorPageLayout
+      label={t('404.label')}
+      title={t('404.title')}
+      description={t('404.message')}
+    />
+  );
+};
 
 export default PageNotFoundPage;

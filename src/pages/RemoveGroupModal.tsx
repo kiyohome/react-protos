@@ -11,6 +11,7 @@ import { useForm } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 import {
@@ -28,6 +29,8 @@ type FromProps = {
 };
 
 const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
+  const { t } = useTranslation();
+
   const [user] = useUser();
   const graphQLClient = useGraphQLClient();
   const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
@@ -44,8 +47,6 @@ const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
     },
   });
 
-  const [state, setState] = useSetState({ message: '' });
-
   const removeGroupMutation = useRemoveGroupMutation(graphQLClient);
   const queryClient = useQueryClient();
 
@@ -57,7 +58,7 @@ const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
         { groupId, owner: user.id },
         {
           onSuccess: async () => {
-            showNotification({ message: 'Removed a group.' });
+            showNotification({ message: t('group.remove.done.message') });
             await queryClient.invalidateQueries([
               'findGroups',
               { userId: user.id },
@@ -81,21 +82,18 @@ const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
 
   return (
     <form onSubmit={form.onSubmit(submit)}>
-      <Text color="red" size="sm">
-        {state.message}
-      </Text>
-      <Text>Are you absolutely sure?</Text>
+      <Text>{t('action.sure.message')}</Text>
       <Text mt="md" color="red">
-        This action cannot be undone.
+        {t('action.undone.message')}
       </Text>
-      <Text>This action removes the group and all associated events.</Text>
+      <Text>{t('group.remove.message')}</Text>
       <Highlight mt="md" highlight={[group?.name ?? '']}>
-        {`Type "${group?.name ?? ''}" for confirmation.`}
+        {t('action.type.confirm.message', { value: group?.name })}
       </Highlight>
       <TextInput
         mt="xs"
         type="text"
-        placeholder="Group name"
+        placeholder={t('group.name.placeholder')}
         {...form.getInputProps('name')}
       />
       <Group position="right" mt="md">
@@ -104,7 +102,7 @@ const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
           size="sm"
           disabled={group?.name !== form.values.name}
         >
-          Remove
+          {t('remove')}
         </Button>
       </Group>
     </form>
@@ -119,6 +117,7 @@ type ModalProps = {
 
 const RemoveGroupModal = ({ opened, close, groupId }: ModalProps) => {
   const config = useConfig();
+  const { t } = useTranslation();
 
   const [state, setState] = useSetState({ loading: false });
 
@@ -126,7 +125,7 @@ const RemoveGroupModal = ({ opened, close, groupId }: ModalProps) => {
     <Modal
       opened={opened}
       onClose={close}
-      title="Remove a group"
+      title={t('group.remove')}
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
