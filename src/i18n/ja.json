@@ -21,7 +21,7 @@
   "group.add": "グループ追加",
   "group.add.done.message": "グループを追加しました。",
   "group.change": "グループ変更",
-  "group.change.done": "グループを変更しました。",
+  "group.change.done.message": "グループを変更しました。",
   "group.name.placeholder": "グループ名",
   "group.remove": "グループ削除",
   "group.remove.done.message": "グループを削除しました。",
