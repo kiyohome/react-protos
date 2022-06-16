@@ -103,13 +103,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
     try {
       setLoading(true);
 
-      let input = {};
-      if (values.name && values.name !== group?.name) {
-        input = { ...input, name: values.name };
-      }
-      if (values.owner && values.owner !== group?.profiles?.id) {
-        input = { ...input, owner: values.owner };
-      }
+      const input = { ...values };
 
       const onSuccess = async () => {
         showNotification({ message: t('group.change.done.message') });
@@ -120,6 +114,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
       };
 
       await changeGroupMutation.mutateAsync({ groupId, input }, { onSuccess });
+
       close();
     } finally {
       setLoading(false);
