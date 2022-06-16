@@ -12,14 +12,14 @@ import { useSetState } from '@mantine/hooks';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useFindGroupsQuery } from '../generated/graphql';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import useIsMobile from '../hooks/Mobile';
-import { useUser } from '../hooks/User';
+import { useFindGroupsQuery } from '../../generated/graphql';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import useIsMobile from '../../hooks/Mobile';
+import { useUser } from '../../hooks/User';
+import Loading from '../Loading';
 import AddGroupModal from './AddGroupModal';
 import ChangeGroupModal from './ChangeGroupModal';
 import ChangeMembersModal from './ChangeMembersModal';
-import Loading from './Loading';
 import RemoveGroupModal from './RemoveGroupModal';
 
 type GroupsProps = {

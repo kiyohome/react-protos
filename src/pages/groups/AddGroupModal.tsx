@@ -5,10 +5,10 @@ import { showNotification } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
-import { useAddGroupMutation } from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+import { useAddGroupMutation } from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
 
 type Props = {
   opened: boolean;

@@ -17,10 +17,10 @@ import { useQueryClient } from 'react-query';
 import {
   useChangeGroupMutation,
   useFindGroupsQuery,
-} from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+} from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
 
 type FormProps = {
   groupId: number;

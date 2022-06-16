@@ -17,10 +17,10 @@ import { useQueryClient } from 'react-query';
 import {
   useFindGroupsQuery,
   useRemoveGroupMutation,
-} from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+} from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
 
 type FromProps = {
   groupId: number;
@@ -29,6 +29,7 @@ type FromProps = {
 };
 
 const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
+  const config = useConfig();
   const { t } = useTranslation();
 
   const [user] = useUser();
@@ -55,9 +56,14 @@ const RemoveGroupForm = ({ groupId, setLoading, close }: FromProps) => {
       setLoading(true);
 
       await removeGroupMutation.mutateAsync(
-        { groupId, owner: user.id },
+        {
+          groupId,
+          owner: user.id,
+          atMost: config.atMost,
+        },
         {
           onSuccess: async () => {
+            form.reset();
             showNotification({ message: t('group.remove.done.message') });
             await queryClient.invalidateQueries([
               'findGroups',
