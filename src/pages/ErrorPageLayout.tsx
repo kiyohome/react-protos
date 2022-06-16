@@ -6,7 +6,6 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -54,8 +53,8 @@ type Props = {
 };
 
 const ErrorPageLayout = ({ label, title, description }: Props) => {
-  const navigate = useNavigate();
   const { classes } = useStyles();
+
   return (
     <Container className={classes.root}>
       <div className={classes.label}>{label}</div>
@@ -69,8 +68,14 @@ const ErrorPageLayout = ({ label, title, description }: Props) => {
         {description}
       </Text>
       <Group position="center">
-        <Button variant="subtle" size="md" onClick={() => navigate('/')}>
-          Take me back to home page
+        <Button
+          variant="subtle"
+          size="md"
+          onClick={() => {
+            window.location.href = '/';
+          }}
+        >
+          Take me back to top page
         </Button>
       </Group>
     </Container>
