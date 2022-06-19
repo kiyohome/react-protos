@@ -10,14 +10,20 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import { z } from 'zod';
 
 import { useConfig } from './hooks/Config';
+import useZod from './hooks/Zod';
 import RouterConfig from './RouterConfig';
+
 import './App.css';
 import './i18n/config';
 
 const App = () => {
   const config = useConfig();
+
+  const { customErrorMap } = useZod();
+  z.setErrorMap(customErrorMap);
 
   const handleGlobalError = (error: unknown): void => {
     if (error instanceof Error) {

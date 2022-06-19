@@ -1,16 +1,18 @@
 import { Location, useLocation } from 'react-router-dom';
 
-type NavigateState = {
+type LocationState = {
   state: {
     from: Location;
   };
 };
 
-const useNavigateState = () => {
-  const location = useLocation();
-  return { from: location };
+type NavigateState = {
+  fromPath: string | undefined;
 };
 
-export { useNavigateState };
+const useNavigateState = (): NavigateState => {
+  const location = useLocation() as LocationState;
+  return { fromPath: location.state?.from?.pathname };
+};
 
-export type { NavigateState };
+export default useNavigateState;

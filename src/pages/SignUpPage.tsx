@@ -87,6 +87,9 @@ const SignUpPage = () => {
           description={t('email.description')}
           autoComplete="email"
         />
+        <Text color="dimmed" size="xs">
+          {t('email.signUp.message')}
+        </Text>
         <PasswordInput
           mt="md"
           required

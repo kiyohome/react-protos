@@ -56,10 +56,13 @@
   - 参考にしたもの
     - [Reactで簡単に多言語対応する方法は？react-i18nextの使い方](https://devlog.atlas.jp/2021/12/08/4140)
     - [i18next + i18next-browser-languagedetectorでの開発時には、localStorageに注意する](https://wp-kyoto.net/should-remove-localstorage-when-debugging-i18next-browser-lang-detector/)
+- バリデーション
+  - [Zod](https://zod.dev/)
+  - 参考にしたもの
+    - [TypeScriptファーストなバリデーションライブラリ Zodの始め方](https://qiita.com/kjkj_ongr/items/0eff5173b6e4fce7fbe8)
 
 ## これから含めるもの
 
-- バリデーション
 - モックライブラリ
 
 ## 動かすまで
