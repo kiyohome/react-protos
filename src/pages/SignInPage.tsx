@@ -27,8 +27,8 @@ const SignInPage = () => {
 
   const { rules } = useValidation();
   const schema = z.object({
-    email: rules.email.min(1),
-    password: rules.password.min(1),
+    email: rules.users.email.min(1),
+    password: rules.users.password.min(1),
   });
 
   const form = useForm({

@@ -175,6 +175,8 @@ type GroupsState = {
 };
 
 const GroupsPage = () => {
+  const { t } = useTranslation();
+
   const [state, setState] = useSetState<GroupsState>({
     addGroupOpened: false,
     changeMembersOpened: false,
@@ -196,12 +198,12 @@ const GroupsPage = () => {
   return (
     <>
       <Group position="apart">
-        <Title order={3}>Gropus</Title>
+        <Title order={3}>{t('groups')}</Title>
         <Button
           variant="light"
           onClick={() => setState({ addGroupOpened: true })}
         >
-          New Group
+          {t('group.new')}
         </Button>
       </Group>
       <Suspense fallback={<Loading />}>
