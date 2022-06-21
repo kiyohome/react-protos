@@ -2,8 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import AccessControl from './pages/AccessControl';
 import AppLayout from './pages/AppLayout';
-import EventsPage from './pages/EventsPage';
-import GroupsPage from './pages/GroupsPage';
+import EventsPage from './pages/events/EventsPage';
+import GroupsPage from './pages/groups/GroupsPage';
 import PageNotFoundPage from './pages/PageNotFoundPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';

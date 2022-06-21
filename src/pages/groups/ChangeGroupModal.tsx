@@ -1,26 +1,26 @@
 import {
-  Badge,
   Button,
   Group,
   LoadingOverlay,
   Modal,
   Select,
-  Text,
   TextInput,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { useDebouncedValue, useSetState } from '@mantine/hooks';
+import { useForm, zodResolver } from '@mantine/form';
+import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { z } from 'zod';
 
 import {
   useChangeGroupMutation,
   useFindGroupsQuery,
-} from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+} from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
+import useValidation from '../../hooks/Validation';
 
 type FormProps = {
   groupId: number;
@@ -41,54 +41,19 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
     (me) => me.node?.groups?.id === groupId
   )?.node?.groups;
 
+  const { rules } = useValidation();
+  const schema = z.object({
+    name: rules.groups.name.min(1),
+    owner: rules.groups.owner.min(1),
+  });
+
   const form = useForm({
+    schema: zodResolver(schema),
     initialValues: {
       name: group?.name,
       owner: group?.profiles?.id,
     },
   });
-
-  const owner = (
-    <Badge
-      py="md"
-      size="lg"
-      radius="sm"
-      style={{ textTransform: 'none' }}
-      color="gray"
-    >
-      {
-        group?.membersCollection?.edges.find((memberEdge) => {
-          const profile = memberEdge.node?.profiles;
-          return profile?.id === form.values.owner;
-        })?.node?.profiles?.nickname
-      }
-    </Badge>
-  );
-
-  const members = group?.membersCollection?.edges.map((memberEdge) => {
-    const profile = memberEdge.node?.profiles;
-    return (
-      <Badge
-        key={profile?.id}
-        py="md"
-        size="lg"
-        radius="sm"
-        style={{ textTransform: 'none' }}
-        color="gray"
-      >
-        {profile?.nickname}
-      </Badge>
-    );
-  });
-
-  const searchForm = useForm({
-    initialValues: { userName: '' },
-  });
-
-  const [debouncedUserName] = useDebouncedValue(
-    searchForm.values.userName,
-    500
-  );
 
   const searchResult =
     group?.membersCollection?.edges.map((memberEdge) => {
@@ -103,13 +68,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
     try {
       setLoading(true);
 
-      let input = {};
-      if (values.name && values.name !== group?.name) {
-        input = { ...input, name: values.name };
-      }
-      if (values.owner && values.owner !== group?.profiles?.id) {
-        input = { ...input, owner: values.owner };
-      }
+      const input = { ...values };
 
       const onSuccess = async () => {
         showNotification({ message: t('group.change.done.message') });
@@ -120,6 +79,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
       };
 
       await changeGroupMutation.mutateAsync({ groupId, input }, { onSuccess });
+
       close();
     } finally {
       setLoading(false);
@@ -127,10 +87,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
   };
 
   return (
-    <form onSubmit={form.onSubmit(submit)}>
-      <Text color="dimmed" mt="md" size="sm">
-        {t('group')}
-      </Text>
+    <form onSubmit={form.onSubmit(submit)} noValidate>
       <TextInput
         required
         type="text"
@@ -138,34 +95,13 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
         placeholder={t('group.name.placeholder')}
         {...form.getInputProps('name')}
       />
-      <Text color="dimmed" mt="md" size="sm">
-        {t('owner')}
-      </Text>
       <Select
-        label="Pick the user you wish to assign as the owner."
-        placeholder="Search by user name"
-        data={searchResult.filter((m) => m.label.startsWith(debouncedUserName))}
-        searchable
-        nothingFound={t('no.users')}
-        onSearchChange={(value) => {
-          searchForm.setFieldValue('userName', value);
-        }}
-        onChange={(value) => {
-          const member = searchResult.find((m) => m.value === value);
-
-          if (member === undefined) return;
-
-          const isAlreadyOwner = form.values.owner === member.value;
-          if (isAlreadyOwner) return;
-
-          form.setFieldValue('owner', member.value);
-        }}
+        mt="md"
+        required
+        label={t('owner')}
+        data={searchResult}
+        {...form.getInputProps('owner')}
       />
-      <Group mt="xs">{owner}</Group>
-      <Text color="dimmed" mt="md" size="sm">
-        {t('members')}
-      </Text>
-      <Group>{members}</Group>
       <Group position="right" mt="md">
         <Button type="submit" size="sm">
           {t('save')}

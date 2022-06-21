@@ -21,10 +21,10 @@ import {
   useChangeMembersToOwnerOnlyMutation,
   useFindGroupsQuery,
   useFindProfilesQuery,
-} from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+} from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
 
 type FromProps = {
   groupId: number;
@@ -179,7 +179,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
   }, [groupId]);
 
   return (
-    <form onSubmit={form.onSubmit(submit)}>
+    <form onSubmit={form.onSubmit(submit)} noValidate>
       <Text color="dimmed" mt="md" size="sm">
         {t('group')}
       </Text>
@@ -192,8 +192,8 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
         {t('members')}
       </Text>
       <Select
-        label="Pick the user you want to add."
-        placeholder="Search by user name"
+        mt="xs"
+        description={t('members.change.pick.message')}
         data={searchResult}
         searchable
         nothingFound={t('no.users')}

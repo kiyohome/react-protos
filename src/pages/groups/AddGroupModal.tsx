@@ -1,14 +1,16 @@
 import { Button, Group, LoadingOverlay, Modal, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { z } from 'zod';
 
-import { useAddGroupMutation } from '../generated/graphql';
-import { useConfig } from '../hooks/Config';
-import useGraphQLClient from '../hooks/GraphQLClient';
-import { useUser } from '../hooks/User';
+import { useAddGroupMutation } from '../../generated/graphql';
+import { useConfig } from '../../hooks/Config';
+import useGraphQLClient from '../../hooks/GraphQLClient';
+import { useUser } from '../../hooks/User';
+import useValidation from '../../hooks/Validation';
 
 type Props = {
   opened: boolean;
@@ -19,7 +21,13 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
   const config = useConfig();
   const { t } = useTranslation();
 
+  const { rules } = useValidation();
+  const schema = z.object({
+    name: rules.groups.name.min(1),
+  });
+
   const form = useForm({
+    schema: zodResolver(schema),
     initialValues: {
       name: '',
     },
@@ -63,12 +71,12 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(submit)}>
+      <form onSubmit={form.onSubmit(submit)} noValidate>
         <TextInput
           required
           type="text"
           label={t('name')}
-          placeholder={t('group.name.placeholder')}
+          description={t('group.name.description')}
           {...form.getInputProps('name')}
         />
         <Group position="right" mt="md">

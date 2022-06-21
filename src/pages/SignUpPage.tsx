@@ -8,44 +8,56 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 import { useAuth } from '../hooks/Auth';
 import { useConfig } from '../hooks/Config';
+import useValidation from '../hooks/Validation';
 
 const SignUpPage = () => {
   const config = useConfig();
   const { t } = useTranslation();
 
+  const { rules } = useValidation();
+  const schema = z.object({
+    nickname: rules.profiles.nickname.min(1),
+    email: rules.users.email.min(1),
+    password: rules.users.password.min(1),
+    confirmPassword: rules.users.password.min(1),
+  });
+
   const form = useForm({
+    schema: zodResolver(schema),
     initialValues: {
       nickname: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
-    validate: {
-      confirmPassword: (value, values) =>
-        value !== values.password ? t('password.notMatch.message') : null,
-    },
   });
 
-  const [state, setState] = useSetState({ loading: false, messaage: '' });
+  const [state, setState] = useSetState({ loading: false, message: '' });
   const navigate = useNavigate();
 
   const auth = useAuth();
 
   const submit = async (values: typeof form.values): Promise<void> => {
+    if (values.password !== values.confirmPassword) {
+      form.setFieldError('confirmPassword', t('password.notMatch.message'));
+      return;
+    }
+
     try {
       setState({ loading: true });
 
       const error = await auth.signUp(values);
       if (error) {
-        setState({ messaage: error.message });
+        setState({ message: error.message });
       } else {
         navigate('/signin', { replace: true });
         showNotification({ message: t('signUp.done.message') });
@@ -65,42 +77,46 @@ const SignUpPage = () => {
       centered={config.modalCentered}
     >
       <LoadingOverlay visible={state.loading} />
-      <form onSubmit={form.onSubmit(submit)}>
+      <form onSubmit={form.onSubmit(submit)} noValidate>
         <Text color="red" size="sm">
-          {state.messaage}
+          {state.message}
         </Text>
         <TextInput
           required
           type="text"
           label={t('nickname')}
-          placeholder={t('nickname.placeholder')}
           {...form.getInputProps('nickname')}
           description={t('nickname.description')}
         />
+        <Text mt={5} color="dimmed" size="xs" style={{ lineHeight: 1.2 }}>
+          {t('nickname.signUp.message')}
+        </Text>
         <TextInput
           mt="md"
           required
           type="email"
           label={t('email')}
-          placeholder={t('email.placeholder')}
           {...form.getInputProps('email')}
           description={t('email.description')}
           autoComplete="email"
         />
+        <Text mt={5} color="dimmed" size="xs" style={{ lineHeight: 1.2 }}>
+          {t('email.signUp.message')}
+        </Text>
         <PasswordInput
           mt="md"
           required
           label={t('password')}
-          placeholder={t('password.placeholder')}
           {...form.getInputProps('password')}
+          description={t('password.description')}
           autoComplete="new-password"
         />
         <PasswordInput
           mt="md"
           required
           label={t('password.confirm')}
-          placeholder={t('password.confirm.placeholder')}
           {...form.getInputProps('confirmPassword')}
+          description={t('password.description')}
           autoComplete="new-password"
         />
         <Group position="apart" mt="md">
