@@ -1,6 +1,6 @@
 # react-protos
 
-プロト作成をすぐに始められるように React ベースで多くの SPA に共通しそうな機能をセットアップしたサンプルプロジェクトです。
+プロト作成をすぐに始められるようにReactベースで多くのSPAに共通しそうな機能をセットアップしたサンプルプロジェクトです。
 
 ## 含めたもの
 
@@ -84,12 +84,35 @@
   $ yarn dev
   ```
 
-## おすすめツール
+## 使っているツール
 
 - [Visual Studio Code](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
 - [Altair GraphQL Client](https://altair.sirmuel.design/)
 
-## ER図
+## アプリの要件
+
+イベントの参加者を募集できるようなアプリです。
+
+- 誰でもサインアップしてユーザーになれます。
+- イベントの作成者しかイベントを操作できないと困るのでイベントはグループで管理します。
+- 誰でもグループを作成し、作成した人がオーナーになります。
+- あるグループのメンバーが作成したイベントは同じグループのメンバーであれば誰でも操作できます。
+- オーナーだけだグループの変更やメンバー変更を行えます。
+- まとめると、イベントの作成や変更を行うには、グループを新しく作るか、既にあるグループのオーナーに連絡してグループのメンバーに追加してもらう必要があります。
+
+## アプリの機能
+
+### 出来ているもの
+
+- サインイン、サインアップ、サインアウト
+- グループのCRUD
+
+### これから
+
+- イベントのCRUD
+- イベントへの参加
+
+## アプリのテーブル
 
 [Entity Relationship Diagrams](https://mermaid-js.github.io/mermaid/#/entityRelationshipDiagram?id=entity-relationship-diagrams)
 
@@ -136,3 +159,42 @@ erDiagram
     end_date timestamptz
   }
 ```
+
+## アプリの認可ルール
+
+### profiles
+
+|操作|できる人|
+|---|---|
+|SELECT|サインイン済みユーザーのみ|
+|INSERT|誰でも（＝サインアップ）|
+|UPDATE|自分のみ|
+|DELETE|自分のみ|
+
+### groups
+
+|操作|できる人|
+|---|---|
+|SELECT|サインイン済みユーザーのみ|
+|INSERT|サインイン済みユーザーのみ|
+|UPDATE|オーナーのみ|
+|DELETE|オーナーのみ|
+
+### members
+
+|操作|できる人|
+|---|---|
+|SELECT|同じグループのメンバーのみ|
+|INSERT|オーナーのみ|
+|UPDATE|いない|
+|DELETE|オーナーのみ|
+
+### events、event_schedules
+
+|操作|できる人|
+|---|---|
+|SELECT|同じグループのメンバーのみ|
+|INSERT|同じグループのメンバーのみ|
+|UPDATE|同じグループのメンバーのみ|
+|DELETE|同じグループのメンバーのみ|
+
