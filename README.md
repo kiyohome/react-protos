@@ -2,9 +2,9 @@
 
 プロト作成をすぐに始められるようにReactベースで多くのSPAに共通しそうな機能をセットアップしたサンプルプロジェクトです。
 
-## 含めたもの
+### 含めたもの
 
-- ビルドツール、JS フレームワーク、プログラミング言語
+- ビルドツール、JSフレームワーク、プログラミング言語
   - [Vite](https://vitejs.dev/)
   - [React](https://reactjs.org/)
   - [TypeScript](https://www.typescriptlang.org/)
@@ -84,12 +84,7 @@
   $ yarn dev
   ```
 
-## 使っているツール
-
-- [Visual Studio Code](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
-- [Altair GraphQL Client](https://altair.sirmuel.design/)
-
-## アプリの要件
+## アプリの仕様
 
 イベントの参加者を募集できるようなアプリです。
 
@@ -137,7 +132,7 @@ erDiagram
   }
 
   members {
-    group_id bigint PK
+    group_id integer PK
     user_id uuid PK
   }
 
@@ -149,12 +144,12 @@ erDiagram
   events {
     id serial PK
     name text
-    group_id bigint
+    group_id integer
   }
 
   event_schedules {
     id serial PK
-    event_id bigint
+    event_id integer
     start_date timestamptz
     end_date timestamptz
   }
@@ -198,3 +193,114 @@ erDiagram
 |UPDATE|同じグループのメンバーのみ|
 |DELETE|同じグループのメンバーのみ|
 
+## 開発ガイド
+
+### ディレクトリ構成
+
+```
+src
+├─generated   ->GraphQLスキーマから自動生成したコード
+├─graphql     ->GraphQLのQuery/Mutation
+├─hooks       ->Reactのフック
+├─i18n        ->多言語対応のリソースファイル
+└─pages       ->Reactのコンポーネント（ページやモーダル）
+    ├─events  ->イベント操作
+    └─groups  ->グループ操作
+```
+
+### 開発ツール
+
+- [Visual Studio Code](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
+- [Altair GraphQL Client](https://altair.sirmuel.design/)
+
+### コマンド
+
+```
+$ yarn
+```
+
+パッケージをインストールします。
+
+```
+$ yarn dev
+```
+アプリを起動してブラウザが開きます。
+
+```
+$ yarn lint
+```
+
+静的解析をしてフォーマットします。
+
+## UI
+
+基本のUIは一覧ページから対象を選んで詳細ページを表示して操作を行います。
+操作対象が単純な場合は詳細ページを作らず一覧ページから操作を行います。
+操作はモーダルで行います。
+ページやモーダルは[Mantine](https://mantine.dev/)で作成します。
+
+![ui](./docs/images/ui.png)
+
+## ルーティング
+
+一覧ページや詳細ページはリンクの共有やブックマークできるようにパスを設けます。
+操作を行う際に開くモーダルは利用目的がないため基本的にパスを設けません。
+サインインとサインアップのみリンクを共有するケースがあるためパスを設けます。
+一覧ページは「対象の名前」、詳細ページは「対象の名前/ID」をパスとします。
+
+```
+イベント一覧
+http://localhost:3000/events
+
+イベント詳細
+http://localhost:3000/events/1
+
+サインイン
+http://localhost:3000/signin
+```
+
+ルーティングは[React Router](https://reactrouter.com/)で行います。
+
+```
+/src/RouterConfig.tsx
+
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<AppLayout />}>
+      <Route index element={<WelcomePage />} />
+      <Route path="signup" element={<SignUpPage />} />
+      <Route path="signin" element={<SignInPage />} />
+      <Route
+        path="groups"
+        element={
+          <AccessControl>
+            <GroupsPage />
+          </AccessControl>
+        }
+      />
+      <Route
+        path="events"
+        element={
+          <AccessControl>
+            <EventsPage />
+          </AccessControl>
+        }
+      />
+      <Route path="*" element={<PageNotFoundPage />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
+```
+
+サインインが必要なページはAccessControlコンポーネントで囲います。
+
+```
+<Route
+  path="groups"
+  element={
+    <AccessControl>
+      <GroupsPage />
+    </AccessControl>
+  }
+/>
+```
