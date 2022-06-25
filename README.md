@@ -2,7 +2,7 @@
 
 プロト作成をすぐに始められるようにReactベースで多くのSPAに共通しそうな機能をセットアップしたサンプルプロジェクトです。
 
-### 含めたもの
+## 含めたもの
 
 - ビルドツール、JSフレームワーク、プログラミング言語
   - [Vite](https://vitejs.dev/)
@@ -86,14 +86,14 @@
 
 ## アプリの仕様
 
-イベントの参加者を募集できるようなアプリです。
+イベントを作成し参加者を募集するアプリです。
 
 - 誰でもサインアップしてユーザーになれます。
 - イベントの作成者しかイベントを操作できないと困るのでイベントはグループで管理します。
+- イベントの作成や変更を行うには、グループを新しく作るか、既にあるグループのオーナーに連絡してグループのメンバーに追加してもらう必要があります。
 - 誰でもグループを作成し、作成した人がオーナーになります。
 - あるグループのメンバーが作成したイベントは同じグループのメンバーであれば誰でも操作できます。
-- オーナーだけだグループの変更やメンバー変更を行えます。
-- まとめると、イベントの作成や変更を行うには、グループを新しく作るか、既にあるグループのオーナーに連絡してグループのメンバーに追加してもらう必要があります。
+- オーナーだけがグループの変更やメンバーの変更を行えます。
 
 ## アプリの機能
 
@@ -201,9 +201,9 @@ erDiagram
 src
 ├─generated   ->GraphQLスキーマから自動生成したコード
 ├─graphql     ->GraphQLのQuery/Mutation
-├─hooks       ->Reactのフック
+├─hooks       ->ページやモーダルに共通する処理（Reactのフック）
 ├─i18n        ->多言語対応のリソースファイル
-└─pages       ->Reactのコンポーネント（ページやモーダル）
+└─pages       ->ページやモーダル（Reactのコンポーネント）
     ├─events  ->イベント操作
     └─groups  ->グループ操作
 ```
@@ -232,20 +232,33 @@ $ yarn lint
 
 静的解析をしてフォーマットします。
 
-## UI
+### UI
 
-基本のUIは一覧ページから対象を選んで詳細ページを表示して操作を行います。
+レイアウトはヘッダー、ナビゲーション、コンテンツ、フッターです。
+ナビゲーションにアプリで扱う対象が並び、その対象を選択してコンテンツを切り替えます。
+コンテンツでは一覧ページから対象を選んで詳細ページを表示して操作を行います。
 操作対象が単純な場合は詳細ページを作らず一覧ページから操作を行います。
-操作はモーダルで行います。
+基本的な操作はモーダルで行います。
 ページやモーダルは[Mantine](https://mantine.dev/)で作成します。
 
 ![ui](./docs/images/ui.png)
 
-## ルーティング
+レイアウトは[AppLayout](./src/pages/AppLayout.tsx)で定義しています。
+ヘッダー、ナビゲーション、フッターの内容もAppLayoutに実装しています。
+ナビゲーションの内容を変えたい場合はAppLayout内の次の配列を変更してください。
+
+```
+const links = [
+  { label: t('groups'), path: '/groups' },
+  { label: t('events'), path: '/events' },
+];
+```
+
+### ルーティング
 
 一覧ページや詳細ページはリンクの共有やブックマークできるようにパスを設けます。
-操作を行う際に開くモーダルは利用目的がないため基本的にパスを設けません。
-サインインとサインアップのみリンクを共有するケースがあるためパスを設けます。
+操作を行うモーダルは利用目的がないため基本的にパスを設けません。
+例外的にサインインとサインアップのみリンクを共有するケースがあるためパスを設けます。
 一覧ページは「対象の名前」、詳細ページは「対象の名前/ID」をパスとします。
 
 ```
@@ -259,48 +272,60 @@ http://localhost:3000/events/1
 http://localhost:3000/signin
 ```
 
-ルーティングは[React Router](https://reactrouter.com/)で行います。
+ルーティングには[React Router](https://reactrouter.com/)を使います。
+ルーティングを変えたい場合は[RouterConfig](./src/RouterConfig.tsx)を変更してください。
 
 ```
-/src/RouterConfig.tsx
-
-<BrowserRouter>
-  <Routes>
-    <Route path="/" element={<AppLayout />}>
-      <Route index element={<WelcomePage />} />
-      <Route path="signup" element={<SignUpPage />} />
-      <Route path="signin" element={<SignInPage />} />
-      <Route
-        path="groups"
-        element={
-          <AccessControl>
-            <GroupsPage />
-          </AccessControl>
-        }
-      />
-      <Route
-        path="events"
-        element={
-          <AccessControl>
-            <EventsPage />
-          </AccessControl>
-        }
-      />
-      <Route path="*" element={<PageNotFoundPage />} />
-    </Route>
-  </Routes>
-</BrowserRouter>
+<Route path="/" element={<AppLayout />}>
+  <Route index element={<WelcomePage />} />
+  <Route path="signup" element={<SignUpPage />} />
+  <Route path="signin" element={<SignInPage />} />
+  <Route path="*" element={<PageNotFoundPage />} />
+</Route>
 ```
 
-サインインが必要なページはAccessControlコンポーネントで囲います。
+サインインが必要なページはAccessControlで囲みます。
 
 ```
-<Route
-  path="groups"
-  element={
-    <AccessControl>
-      <GroupsPage />
-    </AccessControl>
-  }
-/>
+<Route path="/" element={<AppLayout />}>
+  <Route index element={<WelcomePage />} />
+  <Route path="signup" element={<SignUpPage />} />
+  <Route path="signin" element={<SignInPage />} />
+  <Route
+    path="groups"
+    element={
+      <AccessControl>
+        <GroupsPage />
+      </AccessControl>
+    }
+  />
+  <Route path="*" element={<PageNotFoundPage />} />
+</Route>
 ```
+
+### ステート管理
+
+#### アプリケーションステート
+
+アプリ起動時を通して管理するステートです。
+アプリケーションステートの管理にはAppStateフックを使ってください。
+
+```
+// 引数はキーと初期値。戻り値は[値, セッター]
+const useUser = () => useAppState('user', guest);
+```
+
+今回のアプリではサインイン済みのユーザーが該当します。
+Userフックを使ってユーザーの設定や取得を行ってください。
+
+```
+// ユーザーの設定
+const [, setUser] = useUser();
+setUser(new User(profile.id, profile.nickname, profile.avatar_url));
+
+// ユーザーの取得
+const [user] = useUser();
+user.id
+```
+
+#### TODO
