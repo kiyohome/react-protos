@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from 'react-query';
 
-const useGlobalState = <T>(
+const useAppState = <T>(
   key: string,
   initialData: T
 ): [T, (newValue: T) => void] => {
@@ -17,4 +17,4 @@ const useGlobalState = <T>(
   return [value as T, setter];
 };
 
-export default useGlobalState;
+export default useAppState;

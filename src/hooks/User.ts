@@ -1,20 +1,33 @@
-import useGlobalState from './GlobalState';
+import useAppState from './AppState';
 
 class User {
-  id;
+  private _id;
 
-  name;
+  private _name;
 
-  avatarUrl;
+  private _avatarUrl;
 
   constructor(id: string, name: string, avatarUrl: string | undefined) {
-    this.id = id;
-    this.name = name;
-    this.avatarUrl = avatarUrl;
+    this._id = id;
+    this._name = name;
+    this._avatarUrl = avatarUrl;
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  get avatarUrl() {
+    return this._avatarUrl;
   }
 }
 
-const useUser = () =>
-  useGlobalState('user', new User('not signed in', 'guest', undefined));
+const guest = new User('not signed in', 'guest', undefined);
+
+const useUser = () => useAppState('user', guest);
 
 export { useUser, User };
