@@ -166,18 +166,10 @@ const Groups = ({
   );
 };
 
-type GroupsState = {
-  addGroupOpened: boolean;
-  changeMembersOpened: boolean;
-  changeGroupOpened: boolean;
-  removeGroupOpened: boolean;
-  groupId: number;
-};
-
 const GroupsPage = () => {
   const { t } = useTranslation();
 
-  const [state, setState] = useSetState<GroupsState>({
+  const [state, setState] = useSetState({
     addGroupOpened: false,
     changeMembersOpened: false,
     changeGroupOpened: false,
