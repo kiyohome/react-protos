@@ -216,19 +216,33 @@ erDiagram
 
 ```
 src
-├─generated   ->GraphQLスキーマから自動生成したコード
-├─graphql     ->GraphQLのQuery/Mutation
-├─hooks       ->ページやモーダルに共通する処理（Reactのフック）
-├─i18n        ->多言語対応のリソースファイル
-└─pages       ->ページやモーダル（Reactのコンポーネント）
-    ├─events  ->イベント操作
-    └─groups  ->グループ操作
+├─generated   # GraphQLスキーマから自動生成したコード
+├─graphql     # GraphQLのQuery/Mutation
+├─hooks       # ページやモーダルに共通する処理（Reactのフック）
+├─i18n        # 多言語対応のリソースファイル
+└─pages       # ページやモーダル（Reactのコンポーネント）
+```
+
+UIライブラリとして[Mantine](https://mantine.dev/)を使うため、Reactコンポはページやモーダルを最小単位とし、機能ごとにディレクトリを分けてまとめます。
+
+```
+src
+└─pages
+    ├─events  # イベント操作
+    └─groups  # グループ操作
 ```
 
 ### 開発ツール
 
 - [Visual Studio Code](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
 - [Altair GraphQL Client](https://altair.sirmuel.design/)
+
+VSCodeの設定と推奨する拡張機能を定義したファイルをプロジェクトに含めています。
+VSCodeでプロジェクトを開くと設定は自動で適用されます。
+推奨する拡張機能が出てきた場合はインストールしてください。
+
+- [settings.json](./.vscode/settings.json)
+- [extensions.json](./.vscode/extensions.json)
 
 ### コマンド
 
@@ -260,7 +274,7 @@ $ yarn lint
 
 レイアウトは[AppLayout](./src/pages/AppLayout.tsx)で定義しています。
 ヘッダー、ナビゲーション、フッターの内容もAppLayoutに実装しています。
-ナビゲーションの内容を変えたい場合はAppLayout内の次の配列を変更してください。
+ナビゲーションの内容を変えたい場合はAppLayout内の次の配列を変更します。
 
 ```
 const links = [
@@ -288,7 +302,7 @@ http://localhost:3000/signin
 ```
 
 ルーティングには[React Router](https://reactrouter.com/)を使います。
-ルーティングを変えたい場合は[RouterConfig](./src/RouterConfig.tsx)を変更してください。
+ルーティングを変えたい場合は[RouterConfig](./src/RouterConfig.tsx)を変更します。
 
 ```
 <Route path="/" element={<AppLayout />}>
@@ -299,23 +313,17 @@ http://localhost:3000/signin
 </Route>
 ```
 
-サインインが必要なページはAccessControlで囲みます。
+サインインが必要なページは[AccessControl](./src/pages/AccessControl.tsx)で囲みます。
 
 ```
-<Route path="/" element={<AppLayout />}>
-  <Route index element={<WelcomePage />} />
-  <Route path="signup" element={<SignUpPage />} />
-  <Route path="signin" element={<SignInPage />} />
-  <Route
-    path="groups"
-    element={
-      <AccessControl>
-        <GroupsPage />
-      </AccessControl>
-    }
-  />
-  <Route path="*" element={<PageNotFoundPage />} />
-</Route>
+<Route
+  path="groups"
+  element={
+    <AccessControl>
+      <GroupsPage />
+    </AccessControl>
+  }
+/>
 ```
 
 ### ステート管理
@@ -323,7 +331,6 @@ http://localhost:3000/signin
 #### アプリケーションステート
 
 アプリ全体に渡って保持するステートです。
-
 アプリケーションステートの仕組みとしてAppStateフックを用意しています。
 
 ```
@@ -332,16 +339,99 @@ const useUser = () => useAppState('user', guest);
 ```
 
 今回のアプリではサインイン済みのユーザーをアプリケーションステートとして保持して、どの機能からでもユーザーステートにアクセスできるようにします。
-ユーザーステートへのアクセスにはUserフックを使ってください。
+ユーザーステートへのアクセスには[Userフック](./src/hooks/User.ts)を使います。
 
 ```
+const [user, setUser] = useUser();
+
 // ユーザーの設定
-const [, setUser] = useUser();
 setUser(new User(profile.id, profile.nickname, profile.avatar_url));
 
-// ユーザーの取得
-const [user] = useUser();
+// ユーザーの参照
 user.id
+user.name
+user.avatarUrl
 ```
 
-#### TODO
+#### サーバーステート
+
+API呼び出しで取得したアプリデータのステートです。
+サーバーステートには[React Query](https://react-query.tanstack.com/)を使います。
+
+APIにはGraphQLを使い、React Queryを使ったAPI呼び出しのコードは自動生成します。
+そのため、アプリ実装ではReact QueryのuseQueryやuseMutationを直接呼び出すことはありません。
+データ更新後はQueryClient.invalidateQueriesを呼び出しキャッシュを更新します。
+
+```
+// データ取得
+const [user] = useUser();
+const graphQLClient = useGraphQLClient();
+const { data: findGroupsQuery } = useFindGroupsQuery(graphQLClient, {
+  userId: user.id,
+});
+
+// データ更新
+const graphQLClient = useGraphQLClient();
+const changeGroupMutation = useChangeGroupMutation(graphQLClient);
+const queryClient = useQueryClient();
+const submit = async (values: typeof form.values) => {
+  const input = { ...values };
+
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries([
+      'findGroups',
+      { userId: user.id },
+    ]);
+  };
+
+  await changeGroupMutation.mutateAsync({ groupId, input }, { onSuccess });
+};
+```
+
+#### コンポーネントステート
+
+ページやモーダル単位のステートはMantineの[use-set-state](https://mantine.dev/hooks/use-set-state/)を使います。
+
+```
+const [state, setState] = useSetState({
+  addGroupOpened: false,
+  changeMembersOpened: false,
+  changeGroupOpened: false,
+  removeGroupOpened: false,
+  groupId: -1,
+});
+
+
+setState({ addGroupOpened: true })
+```
+
+#### フォームステート
+
+入力フォームのステートはMantineの[use-form](https://mantine.dev/form/use-form/)を使います。
+
+```
+const form = useForm({
+  initialValues: {
+    name: '',
+  },
+});
+
+const submit = async (values: typeof form.values) => {
+  // valuesを使った処理
+};
+
+<form onSubmit={form.onSubmit(submit)} noValidate>
+  <TextInput
+    required
+    type="text"
+    label={t('name')}
+    description={t('group.name.description')}
+    {...form.getInputProps('name')}
+  />
+  <Group position="right" mt="md">
+    <Button type="submit" size="sm">
+      {t('add')}
+    </Button>
+  </Group>
+</form>
+```
