@@ -212,26 +212,6 @@ erDiagram
 
 ## 開発ガイド
 
-### ディレクトリ構成
-
-```
-src
-├─generated   # GraphQLスキーマから自動生成したコード
-├─graphql     # GraphQLのQuery/Mutation
-├─hooks       # ページやモーダルに共通する処理（Reactのフック）
-├─i18n        # 多言語対応のリソースファイル
-└─pages       # ページやモーダル（Reactのコンポーネント）
-```
-
-UIライブラリとして[Mantine](https://mantine.dev/)を使うため、Reactコンポはページやモーダルを最小単位とし、機能ごとにディレクトリを分けてまとめます。
-
-```
-src
-└─pages
-    ├─events  # イベント操作
-    └─groups  # グループ操作
-```
-
 ### 開発ツール
 
 - [Visual Studio Code](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)
@@ -260,6 +240,26 @@ $ yarn dev
 $ yarn lint
 ```
 静的解析をしてフォーマットします。
+
+### ディレクトリ構成
+
+```
+src
+├─generated   # GraphQLスキーマから自動生成したコード
+├─graphql     # GraphQLのQuery/Mutation
+├─hooks       # ページやモーダルに共通する処理（Reactのフック）
+├─i18n        # 多言語対応のリソースファイル
+└─pages       # ページやモーダル（Reactのコンポーネント）
+```
+
+UIライブラリとして[Mantine](https://mantine.dev/)を使うため、Reactコンポはページやモーダルを最小単位とし、機能ごとにディレクトリを分けてまとめます。
+
+```
+src
+└─pages
+    ├─events  # イベント操作
+    └─groups  # グループ操作
+```
 
 ### UI
 
@@ -331,11 +331,11 @@ http://localhost:3000/signin
 #### アプリケーションステート
 
 アプリ全体に渡って保持するステートです。
-アプリケーションステートの仕組みとしてAppStateフックを用意しています。
+アプリケーションステートの仕組みとして[AppStateフック](./src/hooks/AppState.ts)を用意しています。
 
 ```
 // 引数はキーと初期値。戻り値は[値, セッター]
-const useUser = () => useAppState('user', guest);
+const useUser = () => useAppState('user', new User(...));
 ```
 
 今回のアプリではサインイン済みのユーザーをアプリケーションステートとして保持して、どの機能からでもユーザーステートにアクセスできるようにします。
@@ -345,7 +345,7 @@ const useUser = () => useAppState('user', guest);
 const [user, setUser] = useUser();
 
 // ユーザーの設定
-setUser(new User(profile.id, profile.nickname, profile.avatar_url));
+setUser(new User(...));
 
 // ユーザーの参照
 user.id
