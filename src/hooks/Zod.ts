@@ -3,8 +3,9 @@ import { ZodIssueCode, ZodIssueOptionalMessage } from 'zod';
 
 type ErrorMapCtx = {
   defaultError: string;
-  data: any;
+  data: unknown;
 };
+
 // 下記のデフォルト実装をベースにエラーメッセージの多言語対応を実施しています。
 // https://github.com/colinhacks/zod/blob/master/src/ZodError.ts#L300
 const useZod = () => {

@@ -1,0 +1,8 @@
+{
+  "label": "ガイド",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "アプリの作り方を案内します。"
+  }
+}

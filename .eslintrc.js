@@ -25,6 +25,12 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'import', 'unused-imports'],
   rules: {
+    'no-underscore-dangle': [
+      'error',
+      {
+        allowAfterThis: true,
+      },
+    ],
     'import/extensions': [
       'error',
       {

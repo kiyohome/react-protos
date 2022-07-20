@@ -1,7 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-import { useConfig } from './Config';
-import useGlobalState from './GlobalState';
+import { config } from '../AppConfig';
 
 type Profile = {
   id: string;
@@ -77,13 +76,8 @@ class Auth {
   };
 }
 
-const useAuth = () => {
-  const config = useConfig();
-  const [auth] = useGlobalState(
-    'auth',
-    new Auth(config.url, config.anonKey, config.persistSession)
-  );
-  return auth;
-};
+const auth = new Auth(config.url, config.anonKey, config.persistSession);
+
+const useAuth = () => auth;
 
 export { useAuth, Auth };
