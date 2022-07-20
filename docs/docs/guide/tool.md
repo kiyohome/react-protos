@@ -20,8 +20,8 @@ VSCodeの設定と推奨する拡張機能を定義したファイルをプロ�
 VSCodeでプロジェクトを開くと設定は自動で適用されます。
 推奨する拡張機能が出てきた場合はインストールしてください。
 
-- [settings.json](./.vscode/settings.json)
-- [extensions.json](./.vscode/extensions.json)
+- [settings.json](https://github.com/kiyohome/react-protos/blob/main/.vscode/settings.json)
+- [extensions.json](https://github.com/kiyohome/react-protos/blob/main/.vscode/extensions.json)
 
 ## GraphQLクライアント
 
