@@ -15,8 +15,8 @@ sidebar_position: 3
   VITE_SUPABASE_PERSIST_SESSION=no
   ```
 1. Supabaseのダッシュボードから次のSQLを実行してテーブルやポリシー等を作成します。
-    - [SQLでlikeを使えるようにSupabaseをカスタマイズ](./backend/sql/like_operation.sql)
-    - [アプリのDDL](./backend/sql/all.sql)
+    - [SQLでlikeを使えるようにSupabaseをカスタマイズ](https://github.com/kiyohome/react-protos/blob/main/backend/sql/like_operation.sql)
+    - [アプリのDDL](https://github.com/kiyohome/react-protos/blob/main/backend/sql/all.sql)
 1. 次のコマンドでアプリを起動します。
   ```
   $ yarn
