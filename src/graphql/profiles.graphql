@@ -1,5 +1,5 @@
-query findProfiles($first: Int!, $likeName: String!) {
-  profilesCollection(first: $first, filter: { nickname: { like: $likeName } }) {
+query findProfiles($first: Int!, $name: String!) {
+  profilesCollection(first: $first, filter: { nickname: { eq: $name } }) {
     edges {
       node {
         id

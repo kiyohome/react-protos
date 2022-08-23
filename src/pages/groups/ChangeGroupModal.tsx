@@ -9,8 +9,8 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { z } from 'zod';
 
 import {
@@ -48,7 +48,7 @@ const ChangeGroupForm = ({ groupId, setLoading, close }: FormProps) => {
   });
 
   const form = useForm({
-    schema: zodResolver(schema),
+    validate: zodResolver(schema),
     initialValues: {
       name: group?.name,
       owner: group?.profiles?.id,

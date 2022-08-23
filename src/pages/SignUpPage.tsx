@@ -32,7 +32,7 @@ const SignUpPage = () => {
   });
 
   const form = useForm({
-    schema: zodResolver(schema),
+    validate: zodResolver(schema),
     initialValues: {
       nickname: '',
       email: '',

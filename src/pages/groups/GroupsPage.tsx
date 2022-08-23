@@ -1,13 +1,4 @@
-import {
-  Badge,
-  Button,
-  Group,
-  Menu,
-  MenuItem,
-  Table,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Badge, Button, Group, Menu, Table, Text, Title } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +44,7 @@ const Groups = ({
 
     const menu = (
       <Menu>
-        <MenuItem
+        <Menu.Item
           onClick={() => {
             if (group) {
               openChangeMembers(group.id);
@@ -62,8 +53,8 @@ const Groups = ({
           disabled={!isOwner}
         >
           {t('members.change')}
-        </MenuItem>
-        <MenuItem
+        </Menu.Item>
+        <Menu.Item
           onClick={() => {
             if (group) {
               openChangeGroup(group.id);
@@ -72,8 +63,8 @@ const Groups = ({
           disabled={!isOwner}
         >
           {t('group.change')}
-        </MenuItem>
-        <MenuItem
+        </Menu.Item>
+        <Menu.Item
           onClick={() => {
             if (group) {
               openRemove(group.id);
@@ -82,7 +73,7 @@ const Groups = ({
           disabled={!isOwner}
         >
           {t('group.remove')}
-        </MenuItem>
+        </Menu.Item>
       </Menu>
     );
 

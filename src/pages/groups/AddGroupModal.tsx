@@ -2,8 +2,8 @@ import { Button, Group, LoadingOverlay, Modal, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { z } from 'zod';
 
 import { useAddGroupMutation } from '../../generated/graphql';
@@ -27,7 +27,7 @@ const AddGroupModal = ({ opened, onClose }: Props) => {
   });
 
   const form = useForm({
-    schema: zodResolver(schema),
+    validate: zodResolver(schema),
     initialValues: {
       name: '',
     },

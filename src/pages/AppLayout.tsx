@@ -3,7 +3,6 @@ import {
   AppShell,
   Avatar,
   Burger,
-  Divider,
   Footer,
   Group,
   Header,
@@ -18,9 +17,9 @@ import {
 } from '@mantine/core';
 import { useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useTranslation } from 'react-i18next';
-import { useQueryErrorResetBoundary } from 'react-query';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/Auth';
@@ -130,25 +129,29 @@ const AppLayout = () => {
                 opened={state.menuOpened}
                 onOpen={() => setState({ menuOpened: true })}
                 onClose={() => setState({ menuOpened: false })}
-                control={<Avatar radius="md" size="md" />}
               >
-                <Menu.Label>
-                  {auth.isSignedIn ? user.name : t('guest')} (
-                  {i18n.language.substring(0, 2)})
-                </Menu.Label>
-                <Divider />
-                {auth.isSignedIn ? (
-                  <Menu.Item onClick={signOut}>{t('signOut')}</Menu.Item>
-                ) : (
-                  <>
-                    <Menu.Item onClick={() => navigate('/signin')}>
-                      {t('signIn')}
-                    </Menu.Item>
-                    <Menu.Item onClick={() => navigate('/signup')}>
-                      {t('signUp')}
-                    </Menu.Item>
-                  </>
-                )}
+                <Menu.Target>
+                  <Avatar radius="md" size="md" />
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label>
+                    {auth.isSignedIn ? user.name : t('guest')} (
+                    {i18n.language.substring(0, 2)})
+                  </Menu.Label>
+                  <Menu.Divider />
+                  {auth.isSignedIn ? (
+                    <Menu.Item onClick={signOut}>{t('signOut')}</Menu.Item>
+                  ) : (
+                    <>
+                      <Menu.Item onClick={() => navigate('/signin')}>
+                        {t('signIn')}
+                      </Menu.Item>
+                      <Menu.Item onClick={() => navigate('/signup')}>
+                        {t('signUp')}
+                      </Menu.Item>
+                    </>
+                  )}
+                </Menu.Dropdown>
               </Menu>
             </Group>
           </Group>

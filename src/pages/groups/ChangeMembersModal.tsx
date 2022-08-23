@@ -8,12 +8,12 @@ import {
   Select,
   Text,
 } from '@mantine/core';
-import { formList, useForm } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { useDebouncedValue, useSetState } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
 import { X } from 'tabler-icons-react';
 
 import {
@@ -65,7 +65,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
   );
 
   const form = useForm({
-    initialValues: { members: formList(initialMembers) },
+    initialValues: { members: initialMembers },
   });
 
   const members = form.values.members.map((member, index) => (
@@ -106,7 +106,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
     graphQLClient,
     {
       first: config.autocomplete,
-      likeName: `${debouncedUserName}%`,
+      name: debouncedUserName,
     },
     {
       enabled: debouncedUserName.trim().length > 0,
@@ -210,7 +210,7 @@ const ChangeMembersForm = ({ groupId, setLoading, close }: FromProps) => {
             undefined;
           if (isAlreadyMember) return;
 
-          form.addListItem('members', {
+          form.insertListItem('members', {
             id: member.value,
             nickname: member.label,
           });

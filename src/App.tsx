@@ -3,13 +3,13 @@ import {
   NotificationsProvider,
   showNotification,
 } from '@mantine/notifications';
-import React from 'react';
 import {
   MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
-} from 'react-query';
+} from '@tanstack/react-query';
+import React from 'react';
 import { z } from 'zod';
 
 import { useConfig } from './hooks/Config';

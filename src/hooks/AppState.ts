@@ -1,20 +1,20 @@
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const useAppState = <T>(
   key: string,
   initialData: T
 ): [T, (newValue: T) => void] => {
-  const { data: value } = useQuery<T>(key, {
+  const { data: value } = useQuery<T>([key], {
     enabled: false,
     ...{ initialData },
   });
 
   const queryClient = useQueryClient();
   const setter = (newValue: T) => {
-    queryClient.setQueryData(key, newValue);
+    queryClient.setQueryData([key], newValue);
   };
 
-  return [value as T, setter];
+  return [value, setter];
 };
 
 export default useAppState;

@@ -32,7 +32,7 @@ const SignInPage = () => {
   });
 
   const form = useForm({
-    schema: zodResolver(schema),
+    validate: zodResolver(schema),
     initialValues: {
       email: '',
       password: '',

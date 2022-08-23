@@ -5,7 +5,7 @@ import {
   useMutation,
   UseQueryOptions,
   UseMutationOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -48,6 +48,7 @@ export type BigIntFilter = {
   eq?: InputMaybe<Scalars['BigInt']>;
   gt?: InputMaybe<Scalars['BigInt']>;
   gte?: InputMaybe<Scalars['BigInt']>;
+  in?: InputMaybe<Array<Scalars['BigInt']>>;
   lt?: InputMaybe<Scalars['BigInt']>;
   lte?: InputMaybe<Scalars['BigInt']>;
   neq?: InputMaybe<Scalars['BigInt']>;
@@ -58,6 +59,7 @@ export type BooleanFilter = {
   eq?: InputMaybe<Scalars['Boolean']>;
   gt?: InputMaybe<Scalars['Boolean']>;
   gte?: InputMaybe<Scalars['Boolean']>;
+  in?: InputMaybe<Array<Scalars['Boolean']>>;
   lt?: InputMaybe<Scalars['Boolean']>;
   lte?: InputMaybe<Scalars['Boolean']>;
   neq?: InputMaybe<Scalars['Boolean']>;
@@ -68,6 +70,7 @@ export type DateFilter = {
   eq?: InputMaybe<Scalars['Date']>;
   gt?: InputMaybe<Scalars['Date']>;
   gte?: InputMaybe<Scalars['Date']>;
+  in?: InputMaybe<Array<Scalars['Date']>>;
   lt?: InputMaybe<Scalars['Date']>;
   lte?: InputMaybe<Scalars['Date']>;
   neq?: InputMaybe<Scalars['Date']>;
@@ -78,6 +81,7 @@ export type DatetimeFilter = {
   eq?: InputMaybe<Scalars['Datetime']>;
   gt?: InputMaybe<Scalars['Datetime']>;
   gte?: InputMaybe<Scalars['Datetime']>;
+  in?: InputMaybe<Array<Scalars['Datetime']>>;
   lt?: InputMaybe<Scalars['Datetime']>;
   lte?: InputMaybe<Scalars['Datetime']>;
   neq?: InputMaybe<Scalars['Datetime']>;
@@ -88,6 +92,7 @@ export type FloatFilter = {
   eq?: InputMaybe<Scalars['Float']>;
   gt?: InputMaybe<Scalars['Float']>;
   gte?: InputMaybe<Scalars['Float']>;
+  in?: InputMaybe<Array<Scalars['Float']>>;
   lt?: InputMaybe<Scalars['Float']>;
   lte?: InputMaybe<Scalars['Float']>;
   neq?: InputMaybe<Scalars['Float']>;
@@ -98,6 +103,7 @@ export type IntFilter = {
   eq?: InputMaybe<Scalars['Int']>;
   gt?: InputMaybe<Scalars['Int']>;
   gte?: InputMaybe<Scalars['Int']>;
+  in?: InputMaybe<Array<Scalars['Int']>>;
   lt?: InputMaybe<Scalars['Int']>;
   lte?: InputMaybe<Scalars['Int']>;
   neq?: InputMaybe<Scalars['Int']>;
@@ -235,9 +241,13 @@ export type MutationUpdateprofilesCollectionArgs = {
 
 /** Defines a per-field sorting order */
 export enum OrderByDirection {
+  /** Ascending order, nulls first */
   AscNullsFirst = 'AscNullsFirst',
+  /** Ascending order, nulls last */
   AscNullsLast = 'AscNullsLast',
+  /** Descending order, nulls first */
   DescNullsFirst = 'DescNullsFirst',
+  /** Descending order, nulls last */
   DescNullsLast = 'DescNullsLast',
 }
 
@@ -317,7 +327,7 @@ export type StringFilter = {
   eq?: InputMaybe<Scalars['String']>;
   gt?: InputMaybe<Scalars['String']>;
   gte?: InputMaybe<Scalars['String']>;
-  like?: InputMaybe<Scalars['String']>;
+  in?: InputMaybe<Array<Scalars['String']>>;
   lt?: InputMaybe<Scalars['String']>;
   lte?: InputMaybe<Scalars['String']>;
   neq?: InputMaybe<Scalars['String']>;
@@ -328,6 +338,7 @@ export type TimeFilter = {
   eq?: InputMaybe<Scalars['Time']>;
   gt?: InputMaybe<Scalars['Time']>;
   gte?: InputMaybe<Scalars['Time']>;
+  in?: InputMaybe<Array<Scalars['Time']>>;
   lt?: InputMaybe<Scalars['Time']>;
   lte?: InputMaybe<Scalars['Time']>;
   neq?: InputMaybe<Scalars['Time']>;
@@ -336,6 +347,7 @@ export type TimeFilter = {
 /** Boolean expression comparing fields on type "UUID" */
 export type UuidFilter = {
   eq?: InputMaybe<Scalars['UUID']>;
+  in?: InputMaybe<Array<Scalars['UUID']>>;
   neq?: InputMaybe<Scalars['UUID']>;
 };
 
@@ -361,7 +373,7 @@ export type Event_SchedulesDeleteResponse = {
 
 export type Event_SchedulesEdge = {
   cursor: Scalars['String'];
-  node?: Maybe<Event_Schedules>;
+  node: Event_Schedules;
 };
 
 export type Event_SchedulesFilter = {
@@ -435,7 +447,7 @@ export type EventsDeleteResponse = {
 
 export type EventsEdge = {
   cursor: Scalars['String'];
-  node?: Maybe<Events>;
+  node: Events;
 };
 
 export type EventsFilter = {
@@ -515,7 +527,7 @@ export type GroupsDeleteResponse = {
 
 export type GroupsEdge = {
   cursor: Scalars['String'];
-  node?: Maybe<Groups>;
+  node: Groups;
 };
 
 export type GroupsFilter = {
@@ -575,7 +587,7 @@ export type MembersDeleteResponse = {
 
 export type MembersEdge = {
   cursor: Scalars['String'];
-  node?: Maybe<Members>;
+  node: Members;
 };
 
 export type MembersFilter = {
@@ -652,7 +664,7 @@ export type ProfilesDeleteResponse = {
 
 export type ProfilesEdge = {
   cursor: Scalars['String'];
-  node?: Maybe<Profiles>;
+  node: Profiles;
 };
 
 export type ProfilesFilter = {
@@ -700,7 +712,7 @@ export type FindGroupsQueryVariables = Exact<{
 export type FindGroupsQuery = {
   membersCollection?: {
     edges: Array<{
-      node?: {
+      node: {
         groups?: {
           id: number;
           name: string;
@@ -711,17 +723,17 @@ export type FindGroupsQuery = {
           } | null;
           membersCollection?: {
             edges: Array<{
-              node?: {
+              node: {
                 profiles?: {
                   id: string;
                   nickname: string;
                   avatar_url?: string | null;
                 } | null;
-              } | null;
+              };
             }>;
           } | null;
         } | null;
-      } | null;
+      };
     }>;
   } | null;
 };
@@ -780,17 +792,13 @@ export type ChangeMembersToOwnerOnlyMutation = {
 
 export type FindProfilesQueryVariables = Exact<{
   first: Scalars['Int'];
-  likeName: Scalars['String'];
+  name: Scalars['String'];
 }>;
 
 export type FindProfilesQuery = {
   profilesCollection?: {
     edges: Array<{
-      node?: {
-        id: string;
-        nickname: string;
-        avatar_url?: string | null;
-      } | null;
+      node: { id: string; nickname: string; avatar_url?: string | null };
     }>;
   } | null;
 };
@@ -1021,8 +1029,8 @@ export const useChangeMembersToOwnerOnlyMutation = <
     options
   );
 export const FindProfilesDocument = `
-    query findProfiles($first: Int!, $likeName: String!) {
-  profilesCollection(first: $first, filter: {nickname: {like: $likeName}}) {
+    query findProfiles($first: Int!, $name: String!) {
+  profilesCollection(first: $first, filter: {nickname: {eq: $name}}) {
     edges {
       node {
         id
